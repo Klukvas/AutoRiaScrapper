@@ -83,7 +83,8 @@ class BrandModelParser:
     async def get_car_data(self):
         try:
             self.current_page = self.q.get_last_page()[0]
-        except:
+        except Exception as err:
+            print(f"Can not get last parsed page from db -> set default value(1).\nException: {err}")
             self.current_page = 1
         page = 0
         while True:
@@ -105,7 +106,12 @@ class BrandModelParser:
                         if not gearbox_id:
                             print(f"Some error with getting modelId\nad_id: {ad_id}\nbrand: {brand_id}\nmodel:{model_id}\nGearBoxName: {car_data['carData']['gearBoxName']} ")
                             continue
-                        self.q.save_car_data(brand_id, model_id, car_data['carData'], gearbox_id)
+                        result = self.q.save_car_data(brand_id, model_id, car_data['carData'], gearbox_id)
+                        if isinstance(result, int):
+                            print(f"Car with id: {car_data['carData']['autoId']} saved.")
+                        else:
+                            print(f"Error while saving car data.\nError:{result[0]}\npage of car: {self.current_page}.\ncar_data: {car_data}")
+
                     else:
                         desigion = self.bad_request_handler(ad_ids)
                         if desigion:

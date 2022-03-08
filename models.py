@@ -1,18 +1,19 @@
 
 
-import asyncio
-from xmlrpc.client import Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, ForeignKey, Column, Integer, String, Boolean, text
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy import func
+import configparser
 
 Base = declarative_base()
-
+config = configparser.ConfigParser()
+config.read('config.ini')
+db_creds = config['DataBase']
 class DatabaseClient:
     def __init__(self):
-        self.engine = create_engine('postgresql://localhost/carChoicePrompt')
+        self.engine = create_engine(f'{db_creds["driver"]}://{db_creds["host"]}/{db_creds["db_name"]}')
         try:
             if not database_exists(self.engine.url):
                 create_database(self.engine.url)

@@ -134,8 +134,10 @@ class Query:
         try:
             self.db_client.session.add(new_car)
             self.db_client.session.commit()
+            return 1
         except Exception as err:
             self.db_client.session.rollback()
+            return err,
             print(f"Error while saving car data.\nError:{err}\nbrand: {brand}, model: {model}, car_data: {car_data}")
             
 if __name__ == "__main__":
