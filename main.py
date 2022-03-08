@@ -1,15 +1,16 @@
 import asyncio
 from riaApi import RiaApi 
 from query import Query
-
+from logger import Logger
+from asyncstdlib.builtins import map as amap, tuple as atuple
 
 class BrandModelParser:
 
 
-    def __init__(self) -> None:
-        self.api = RiaApi()
-        self.q = Query()
-
+    def __init__(self, log) -> None:
+        self.api = RiaApi(log)
+        self.q = Query(log)
+        self.log = log
 
     def save_parsed_models(self, models:list, brand_id:int) -> None:
         for model in models:
@@ -37,10 +38,10 @@ class BrandModelParser:
         if response == 429:
             set_config_result = self.api.set_config()
             if set_config_result:
-                print(f"set new api key to api and continue work")
+                self.log.info(f"Set new api key to api and continue work")
                 return True
             else:
-                print(f"Can not set new api key -> stop working and write last parsed page to db")
+                self.log.critical(f"Can not set new api key -> stop working and write last parsed page to db")
                 self.q.upgrade_last_page(self.current_page)
                 return False
         else:
@@ -80,46 +81,46 @@ class BrandModelParser:
             self.q.save_unfinded_data('gearbox', gearbox, None)
             return None
 
+    async def process_ad_id(self, id:int):
+        self.log.info(f"Start processing new ad id: {id}")
+        car_data = await self.api.get_ad_info_by_id(id)
+        if isinstance(car_data, dict):
+            brand_id = self.brand_exists(car_data['brand'])
+            if not brand_id:
+                self.log.error(f"Some error with getting brandId\nad_id: {id}\nbrand: {car_data['brand']}")
+                return
+            model_id = self.model_exists(brand_id, car_data['brand'], car_data['model'])
+            if not model_id:
+                self.log.error(f"Some error with getting modelId\nad_id: {id}\nbrand: {brand_id}\nmodel:{car_data['model']}")
+                return
+            gearbox_id = self.gearbox_exists(car_data['carData']['gearBoxName'])
+            if not gearbox_id:
+                self.log.error(f"Some error with getting modelId\nad_id: {id}\nbrand: {brand_id}\nmodel:{model_id}\nGearBoxName: {car_data['carData']['gearBoxName']} ")
+                return
+            result = self.q.save_car_data(brand_id, model_id, car_data['carData'], gearbox_id)
+            if isinstance(result, int):
+                self.log.info(f"Car with id: {car_data['carData']['autoId']} saved.")
+            else:
+                self.log.error(f"Error while saving car data.\nError:{result[0].detail}\npage of car: {self.current_page}.\ncar_data: {car_data['carData']['autoId']}")
+        else:
+            desigion = self.bad_request_handler(id)
+            if desigion:
+                self.process_ad_id(id)
+            return
+
     async def get_car_data(self):
+        self.log.info('Start collect cars data')
         try:
             self.current_page = self.q.get_last_page()[0]
         except Exception as err:
-            print(f"Can not get last parsed page from db -> set default value(1).\nException: {err}")
+            self.log.warning(f"Can not get last parsed page from db -> set default value(1).\nException: {err}")
             self.current_page = 1
-        page = 0
         while True:
-            page += 1
-            ad_ids = await self.api.get_ads_ids(page)
+            ad_ids = await self.api.get_ads_ids(self.current_page)
             if isinstance(ad_ids, list) and len(ad_ids) > 0:
-                for ad_id in ad_ids:
-                    car_data = await self.api.get_ad_info_by_id(ad_id)
-                    if isinstance(car_data, dict):
-                        brand_id = self.brand_exists(car_data['brand'])
-                        if not brand_id:
-                            print(f"Some error with getting brandId\nad_id: {ad_id}\nbrand: {car_data['brand']}")
-                            continue
-                        model_id = self.model_exists(brand_id, car_data['brand'], car_data['model'])
-                        if not model_id:
-                            print(f"Some error with getting modelId\nad_id: {ad_id}\nbrand: {brand_id}\nmodel:{car_data['model']}")
-                            continue
-                        gearbox_id = self.gearbox_exists(car_data['carData']['gearBoxName'])
-                        if not gearbox_id:
-                            print(f"Some error with getting modelId\nad_id: {ad_id}\nbrand: {brand_id}\nmodel:{model_id}\nGearBoxName: {car_data['carData']['gearBoxName']} ")
-                            continue
-                        result = self.q.save_car_data(brand_id, model_id, car_data['carData'], gearbox_id)
-                        if isinstance(result, int):
-                            print(f"Car with id: {car_data['carData']['autoId']} saved.")
-                        else:
-                            print(f"Error while saving car data.\nError:{result[0]}\npage of car: {self.current_page}.\ncar_data: {car_data}")
-
-                    else:
-                        desigion = self.bad_request_handler(ad_ids)
-                        if desigion:
-                            self.get_car_data()
-                        break
-
+                await atuple(amap(self.process_ad_id, ad_ids))
             elif isinstance(ad_ids, list) and len(ad_ids) < 0:
-                print(f'Work is done, current pool of ids are empty')
+                self.log.info(f'Work is done, current pool of ids are empty')
                 break
             else:
                 desigion = self.bad_request_handler(ad_ids)
@@ -141,15 +142,16 @@ class BrandModelParser:
 
 
 if __name__ == "__main__":
-    import logging
-    logging.basicConfig()
-    logging.getLogger('sqlalchemy').setLevel(logging.CRITICAL)
-    logging.getLogger('sqlalchemy').setLevel(logging.CRITICAL)
-    logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.CRITICAL)
-    import logging
-    for handler in logging.root.handlers:
-        logging.root.removeHandler(handler)
+    # import logging
+    # logging.basicConfig()
+    # logging.getLogger('sqlalchemy').setLevel(logging.CRITICAL)
+    # logging.getLogger('sqlalchemy').setLevel(logging.CRITICAL)
+    # logging.basicConfig()
+    # logging.getLogger('sqlalchemy.engine').setLevel(logging.CRITICAL)
+    # import logging
+    # for handler in logging.root.handlers:
+    #     logging.root.removeHandler(handler)
+    log = Logger().custom_logger()
     loop = asyncio.get_event_loop()
-    parser = BrandModelParser()
+    parser = BrandModelParser(log)
     loop.run_until_complete(parser.run_car_info_parser())

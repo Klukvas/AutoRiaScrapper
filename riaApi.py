@@ -3,9 +3,10 @@ import configparser
 import aiohttp
 class RiaApi:
     
-    def __init__(self) -> None:
+    def __init__(self, log) -> None:
         self.main_url = 'https://developers.ria.com/auto/'
         self.current_config = -1
+        self.log = log
 
     def set_config(self) -> bool:
         config = configparser.ConfigParser()
@@ -15,7 +16,7 @@ class RiaApi:
             self.api_key = config['AutoRia']['api_keys'].split(',')[self.current_config+1].strip()
             return True
         except Exception as err:
-            print(f"Error with setting new congig with id: {self.current_config}\nError: {err}")
+            self.log.warning(f"Error with setting new congig with id: {self.current_config}\nError: {err}")
             return False
 
     async def get_brands(self) -> dict or int:
@@ -29,7 +30,7 @@ class RiaApi:
                     json_response = json.loads( await resp.read())
                     return json_response
                 else:
-                    print(f"Error of getting brand with status code: {resp.status}\nResponse text: {resp.read()}")
+                    self.log.error(f"Error of getting brand with status code: {resp.status}\nResponse text: {resp.read()}")
                     return resp.status
     
     async def get_models(self, mark_id:int) -> dict or int:
@@ -43,7 +44,7 @@ class RiaApi:
                     json_response = json.loads( await resp.read())
                     return json_response
                 else:
-                    print(f"Error of getting model with status code: {resp.status}; url: {resp.url}\nResponse text: {resp.read()}")
+                    self.log.error(f"Error of getting model with status code: {resp.status}; url: {resp.url}\nResponse text: {resp.read()}")
                     return resp.status
     
     async def get_ads_ids(self, page=1) -> list or int:
@@ -59,7 +60,7 @@ class RiaApi:
                     searchec_ids = json_response['result']['search_result']['ids']
                     return searchec_ids
                 else:
-                    print(f"Error of getting ids of ads with status code: {resp.status}; url: {resp.url}\nResponse text: {await resp.read()}")
+                    self.log.error(f"Error of getting ids of ads with status code: {resp.status}; url: {resp.url}\nResponse text: {await resp.read()}")
                     return resp.status
 
     async def get_ad_info_by_id(self, id:int) -> list or int:
@@ -97,11 +98,11 @@ class RiaApi:
                             "from": 'AutoRia'
                         }
                     except Exception as err:
-                        print(f"Some error to collect data abt car\nError: {err}\nId: {id}")
+                        self.log.error(f"Some error to collect data abt car\nError: {err}\nId: {id}")
                         return 'KeyError'
                     return {"carData": ad_data, "brand":brand, "model":model }           
                 else:
-                    print(f"Error of getting ids of ads with status code: {resp.status}; url: {resp.url}\nResponse text: {resp.read()}")
+                    self.log.error(f"Error of getting ids of ads with status code: {resp.status}; url: {resp.url}\nResponse text: {resp.read()}")
                     return resp.status
 
 if __name__ == "__main__":

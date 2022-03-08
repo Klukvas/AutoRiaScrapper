@@ -3,8 +3,9 @@ from sqlalchemy import text
 
 class Query:
 
-    def __init__(self) -> None:
+    def __init__(self, log) -> None:
         self.db_client = DatabaseClient()
+        self.log = log
 
     def __del__(self) -> None:
         self.db_client.session.commit()
@@ -18,7 +19,7 @@ class Query:
             self.db_client.session.add(new_brand)
             self.db_client.session.commit()
         except Exception as err:
-            print(f'Some error with saving brand: {brand};\nError: {err}')
+            self.log.error(f'Some error with saving brand: {brand};\nError: {err}')
             self.db_client.session.rollback()
         return
      
@@ -32,7 +33,7 @@ class Query:
             self.db_client.session.add(new_unfinded_data)
             self.db_client.session.commit()
         except Exception as err:
-            print(f'Some error with saving unfinded data: {data_type} | {value_data};\nError: {err}')
+            self.log.error(f'Some error with saving unfinded data: {data_type} | {value_data};\nError: {err}')
             self.db_client.session.rollback()
         return
    
@@ -50,7 +51,6 @@ class Query:
             )
             self.db_client.session.add(new_page)
             self.db_client.session.commit()
-        print(f"page_num: {page_num}")
 
     def save_model(self, brandId, model):
         new_model = Model(
@@ -61,7 +61,7 @@ class Query:
             self.db_client.session.add(new_model)
             self.db_client.session.commit()
         except Exception as err:
-            print(f'Some error with saving model: {model}; brand id: {brandId};\nError: {err}')
+            self.log.error(f'Some error with saving model: {model}; brand id: {brandId};\nError: {err}')
             self.db_client.session.rollback()
         return
     
@@ -100,7 +100,7 @@ class Query:
             self.db_client.session.add(new_gearbox)
             self.db_client.session.commit()
         except Exception as err:
-            print(f'Some error with saving gearBox: {gearbox};\nError: {err}')
+            self.log.error(f'Some error with saving gearBox: {gearbox};\nError: {err.orig}')
             self.db_client.session.rollback()
         return
     
@@ -138,11 +138,8 @@ class Query:
         except Exception as err:
             self.db_client.session.rollback()
             return err,
-            print(f"Error while saving car data.\nError:{err}\nbrand: {brand}, model: {model}, car_data: {car_data}")
-            
 if __name__ == "__main__":
     d = DatabaseClient()
     q = Query()
-    # q.upgrade_last_page(113)
-    w = q.get_last_page()
+    w = q.save_gear_box('автомат')
     print(w)

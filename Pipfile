@@ -9,6 +9,7 @@ sqlalchemy-utils = "*"
 alembic = "*"
 psycopg2 = "*"
 aiohttp = "*"
+asyncstdlib = "*"
 
 [dev-packages]
 
