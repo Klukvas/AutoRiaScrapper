@@ -10,6 +10,7 @@ alembic = "*"
 psycopg2 = "*"
 aiohttp = "*"
 asyncstdlib = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 

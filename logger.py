@@ -27,10 +27,10 @@ class CustomFormatter(logging.Formatter):
         
 class Logger:
     def custom_logger(self):
-        log = logging.getLogger('RolidasAutoLogger')
+        log = logging.getLogger('CarParserLogger')
         if not log.handlers:
             log.setLevel(logging.DEBUG)
-            file = logging.FileHandler(filename='RolidasAutoLogger.log', mode='a')
+            file = logging.FileHandler(filename='CarParserLogger.log', mode='a')
             console = logging.StreamHandler()
 
             file.setLevel(logging.WARNING)

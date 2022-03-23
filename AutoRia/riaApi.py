@@ -63,7 +63,7 @@ class RiaApi:
                     self.log.error(f"Error of getting ids of ads with status code: {resp.status}; url: {resp.url}\nResponse text: {await resp.read()}")
                     return resp.status
 
-    async def get_ad_info_by_id(self, id:int) -> list or int:
+    async def get_ad_info_by_id(self, id:int, for_upd = False) -> list or int:
         """
         https://developers.ria.com/auto/info?api_key=YOUR_API_KEY&auto_id=YOUR_ID
         """
@@ -72,31 +72,38 @@ class RiaApi:
             async with session.get(url) as resp:
                 if resp.status == 200:
                     json_response = json.loads( await resp.read())
-                    brand = json_response['markName']
-                    model = json_response['modelName']
+                    brand = json_response['markNameEng']
+                    model = json_response['modelNameEng']
                     try:
-                        try:
-                            gearBoxId =  json_response['autoData']['gearBoxId']
-                        except:
-                            gearBoxId = -1
-                        ad_data = {
-                            "price": {
-                                'USD': json_response['USD'],
-                                'EUR': json_response['EUR'],
-                                'UAH': json_response['UAH'],
-                            },
-                            "autoId": json_response['autoData']['autoId'],
-                            "race": json_response['autoData']['raceInt'], 
-                            "year": json_response['autoData']['year'],
-                            "fuelName": json_response['autoData']['fuelNameEng'],
-                            "fuelValue": json_response['autoData']['fuelId'],
-                            "gearBoxId": gearBoxId,
-                            "gearBoxName": json_response['autoData']['gearboxName'],
-                            "hasDamage": json_response['autoInfoBar']['damage'],
-                            "link": json_response['linkToView'],
-                            "vin": json_response['VIN'],
-                            "from": 'AutoRia'
-                        }
+                        if for_upd:
+                            ad_data = {
+                                "category": json_response['autoData']['subCategoryNameEng']
+                            }
+                        else:
+
+                            try:
+                                gearBoxId =  json_response['autoData']['gearBoxId']
+                            except:
+                                gearBoxId = -1
+                            ad_data = {
+                                "category": json_response['autoData']['subCategoryNameEng'],
+                                "price": {
+                                    'USD': json_response['USD'],
+                                    'EUR': json_response['EUR'],
+                                    'UAH': json_response['UAH'],
+                                },
+                                "autoId": json_response['autoData']['autoId'],
+                                "race": json_response['autoData']['raceInt'], 
+                                "year": json_response['autoData']['year'],
+                                "fuelName": json_response['autoData']['fuelNameEng'],
+                                "fuelValue": json_response['autoData']['fuelId'],
+                                "gearBoxId": gearBoxId,
+                                "gearBoxName": json_response['autoData']['gearboxName'],
+                                "hasDamage": json_response['autoInfoBar']['damage'],
+                                "link": json_response['linkToView'],
+                                "vin": json_response['VIN'],
+                                "from": 'AutoRia'
+                            }
                     except Exception as err:
                         self.log.error(f"Some error to collect data abt car\nError: {err}\nId: {id}")
                         return 'KeyError'
