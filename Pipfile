@@ -11,6 +11,7 @@ psycopg2 = "*"
 aiohttp = "*"
 asyncstdlib = "*"
 beautifulsoup4 = "*"
+pytest = "*"
 
 [dev-packages]
 
