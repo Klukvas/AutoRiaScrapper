@@ -25,38 +25,38 @@ class Serializer:
         return {"data": brand_model}
 
     def car_data_serializer(self, data:dict) -> dict:
-        if data["main_data"]['price']:
+        if data["carData"]['price']:
             
-            if data["main_data"]['price']['UAH']:
-                data["main_data"]['price']['UAH'] = int(data["main_data"]['price']['UAH'].replace('грн', "").replace(' ', '').strip())
+            if data["carData"]['price']['UAH']:
+                data["carData"]['price']['UAH'] = int(data["carData"]['price']['UAH'].replace('грн', "").replace(' ', '').strip())
             else:
-                data["main_data"]['price']['UAH'] = None
+                data["carData"]['price']['UAH'] = None
             
-            if data["main_data"]['price']['EUR']:
-                data["main_data"]['price']['EUR'] = int(data["main_data"]['price']['EUR'].replace('€', "").replace(' ', '').strip())
+            if data["carData"]['price']['EUR']:
+                data["carData"]['price']['EUR'] = int(data["carData"]['price']['EUR'].replace('€', "").replace(' ', '').strip())
             else:
-                data["main_data"]['price']['EUR'] = None
+                data["carData"]['price']['EUR'] = None
 
-            if data["main_data"]['price']['USD']:
-                data["main_data"]['price']['USD'] = int(data["main_data"]['price']['USD'].replace('$', "").replace(' ', '').strip())
+            if data["carData"]['price']['USD']:
+                data["carData"]['price']['USD'] = int(data["carData"]['price']['USD'].replace('$', "").replace(' ', '').strip())
             else:
-                data["main_data"]['price']['USD'] = None
+                data["carData"]['price']['USD'] = None
         else:
-            data["main_data"]['price'] = {}
-            data["main_data"]['price']['UAH'] = None
-            data["main_data"]['price']['EUR'] = None
-            data["main_data"]['price']['USD'] = None
+            data["carData"]['price'] = {}
+            data["carData"]['price']['UAH'] = None
+            data["carData"]['price']['EUR'] = None
+            data["carData"]['price']['USD'] = None
         
-        if data["main_data"]['autoId']:
-            data["main_data"]['autoId'] = int(data["main_data"]['autoId'])
+        if data["carData"]['autoId']:
+            data["carData"]['autoId'] = int(data["carData"]['autoId'])
         
-        if data["main_data"]['race']:
-            data["main_data"]['race'] = int(data["main_data"]['race'])
+        if data["carData"]['race']:
+            data["carData"]['race'] = int(data["carData"]['race'])
         
-        if data["main_data"]['fuelValue']:
-            data["main_data"]['fuelValue'] = float(data["main_data"]['fuelValue'])
+        if data["carData"]['fuelValue']:
+            data["carData"]['fuelValue'] = float(data["carData"]['fuelValue'])
         
-        if data["main_data"]['fuelName']:
+        if data["carData"]['fuelName']:
             fuelName_translitor = {
                 "гибрид": "gibrid",
                 "бенз": "benzin",
@@ -69,12 +69,12 @@ class Serializer:
                 
             }
             for item in fuelName_translitor.keys():
-                if item in data["main_data"]['fuelName'].lower().strip():
-                    data["main_data"]['fuelName'] = fuelName_translitor[item]
+                if item in data["carData"]['fuelName'].lower().strip():
+                    data["carData"]['fuelName'] = fuelName_translitor[item]
                     break
-        if data["main_data"]['year']:
-            data["main_data"]['year'] = int(data["main_data"]['year'])
-        if data['gearbox']:
+        if data["carData"]['year']:
+            data["carData"]['year'] = int(data["carData"]['year'])
+        if data["carData"]['gearBoxName']:
             changed = False
             gear_box_translitor = [
                 "автомат",
@@ -85,15 +85,15 @@ class Serializer:
                 "робот"
             ]
             for item in gear_box_translitor:
-                if data['gearbox'].lower().strip() in item:
-                    data['gearbox'] = item
+                if data["carData"]['gearBoxName'].lower().strip() in item:
+                    data["carData"]['gearBoxName'] = item
                     changed = True
                     break
             if not changed:
                 self.log.error(f"Can not find gearbox of car: {data['link']}")
         else:
-            data['gearbox'] = 'не указано'
-        if data['category']:
+            data["carData"]['gearBoxName'] = 'не указано'
+        if data["carData"]['category']:
             category_translitor = {
                 "седан": "sedan",
                 "лимузин": "limuzin",
@@ -109,10 +109,10 @@ class Serializer:
                 "кабриолет": "kabriolet"
             }
             for item in category_translitor.keys():
-                if data['category'].lower().strip() in item:
-                    data['category'] = category_translitor[item]
+                if data["carData"]['category'].lower().strip() in item:
+                    data["carData"]['category'] = category_translitor[item]
                     break
         else:
-            data['category'] = 'drugoj'
+            data["carData"]['category'] = 'drugoj'
         return data
                         

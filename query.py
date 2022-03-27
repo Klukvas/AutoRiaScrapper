@@ -118,6 +118,7 @@ class Query:
         return ids
 
     def save_car_data(self, brand, model, car_data, gearbox_id, category_id):
+        self.log.debug(car_data)
         new_car = Car(
             brand_id      = brand,
             model_id      = model,

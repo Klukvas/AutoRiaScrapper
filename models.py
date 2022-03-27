@@ -63,6 +63,7 @@ class Car(Base):
     __tablename__ = 'cars_info'
 
     id = Column(Integer(), primary_key=True, autoincrement=True)
+    last_update = Column(DateTime(), default=datetime.utcnow())
     brand_id = Column(Integer(), ForeignKey('brands.id'))
     model_id = Column(Integer(), ForeignKey('models.id'))
     auto_id = Column(Integer(), unique=True)
@@ -84,6 +85,7 @@ class GearBox(Base):
     __tablename__ = 'gear_box'
     id = Column(Integer(), primary_key=True)
     gearbox_name = Column(String(), unique=True)
+    last_update = Column(DateTime(), default=datetime.utcnow())
     car = relationship('Car')
 
 

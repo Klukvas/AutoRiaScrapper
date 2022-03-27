@@ -1,27 +1,26 @@
 import asyncio
 from bs4 import BeautifulSoup
 import aiohttp
-from query import Query
 from logger import Logger
-from asyncstdlib.builtins import map as amap, tuple as atuple
-from serializer import Serializer
 from re import search
+from main_parser import Parser
+from asyncstdlib.builtins import map as amap, tuple as atuple
 
-
-class ParkDriveParser:
+class ParkDriveParser(Parser):
 
     def __init__(self, log) -> None:
-        self.log = log
+        super().__init__(log)
         self.main_url = 'https://parkdrive.ua'
         self.start_url = "https://parkdrive.ua/sitemap"
-        self.q = Query(log)
-        self.serializer = Serializer(log)
         self.can_not_find = {"model": [], "brand": [], "modelNbrand": {}}
 
     async def create_soup(self, url):
         async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
             async with session.get(url) as response:
                 if response.status == 200:
+                    if response.url != url:
+                        self.log.error(f"Can not make response to {url}\nRedirect to {response.url}")
+                        return
                     return BeautifulSoup(await response.read(), "html.parser")
                 else:
                     self.log.error(f"Error with getting response from url: {url} with status code: {response.status}")
@@ -48,7 +47,7 @@ class ParkDriveParser:
         
         return new_url
 
-    async def parse_sitemap(self):
+    async def start(self):
         has_next = True
         while has_next:
             self.log.info(f"Start parse page: {self.start_url}")
@@ -91,20 +90,28 @@ class ParkDriveParser:
             for item in soup.findAll('div', class_='car-card-info-wrap'):
                 item.find('a').get('href')
                 all_links.append(item.find('a').get('href'))
-        await self.process_auto(all_links, brand, model)
+        # await self.process_auto(all_links, brand, model)
+        await atuple(amap(lambda link: self.process_auto(link, brand, model), all_links))
 
-    async def process_auto(self, links:list, brand:str, model:str):
-        for item in links:
-            url = self.main_url + item
-            soup = await self.create_soup(url)
-            auto_data = self.find_auto_data(soup, url)
-            self.log.debug(f"Data: {auto_data}")
-            searialized_data = self.serializer.car_data_serializer(auto_data)
 
+    async def process_auto(self, link:list, brand:str, model:str):
+        # for item in links:
+        url = self.main_url + link
+        soup = await self.create_soup(url)
+        auto_data = self.find_auto_data(soup, url)
+        searialized_data = self.serializer.car_data_serializer(auto_data)
+        searialized_data['brand'] = brand
+        searialized_data['model'] = model
+        await self.process_ad_id(searialized_data)
+    
     def find_auto_data(self, soup:str, url:str) -> None or dict:
-        auto_data = {"price": {}}
+        auto_data = {
+            "carData": {
+                "price": {}
+            }
+        }
         try:
-            auto_data["autoId"] = search(r'\d+', url.split('-')[-1]).group(0)
+            auto_data['carData']["autoId"] = search(r'\d+', url.split('-')[-1]).group(0)
         except Exception as err:
             self.log.error(f"Can not get id of auto {url}\nError: {err}")
             return
@@ -114,30 +121,30 @@ class ParkDriveParser:
                 price_usd = prices[0].text
                 if "$" not in price_usd:
                     raise AttributeError('Symbol "$" not is price usd')
-                auto_data["price"]['USD'] = prices[0].text
+                auto_data['carData']["price"]['USD'] = prices[0].text
                 
                 price_eur = prices[1].text
                 if "€" not in price_eur:
                     raise AttributeError('Symbol "€" not is price eur')
-                auto_data["price"]['EUR'] = prices[1].text
+                auto_data['carData']["price"]['EUR'] = prices[1].text
 
                 price_uah = prices[3].text
                 if "грн" not in price_uah:
                     raise AttributeError('Symbols "грн" not is price uah')
-                auto_data["price"]['UAH'] = prices[3].text
+                auto_data['carData']["price"]['UAH'] = prices[3].text
 
             elif len(prices) >= 1:
                 for item in prices:
                     if "$" in item.text:
-                        auto_data["price"]['USD'] = item.text
+                        auto_data['carData']["price"]['USD'] = item.text
                     elif "€" in item.text:
-                        auto_data["price"]['EUR'] = item.text
+                        auto_data['carData']["price"]['EUR'] = item.text
                     elif  "грн" in item.text:
-                        auto_data["price"]['UAH'] = item.text
+                        auto_data['carData']["price"]['UAH'] = item.text
             else:
                 raise AttributeError(f"Can not find prices of car: {url}")
         except Exception as err:
-            auto_data["price"] = None
+            auto_data['carData']["price"] = None
             self.log.error(f"Some error of getting prices of car: {url}\nError: {err}")
         try:
             main_data = soup.find('div', class_='car-info-wrap').findAll('div')
@@ -146,38 +153,57 @@ class ParkDriveParser:
             for i in range(len(main_data)):
                 if "Пробег:" in  main_data[i].text:
                     try:
-                        auto_data["race"] = search(r'\d+', main_data[i+1].text).group(0)
+                        auto_data['carData']["race"] = search(r'\d+', main_data[i+1].text).group(0)
                     except Exception as err:
-                        auto_data["race"] = None
+                        auto_data['carData']["race"] = None
                         self.log.error(f"Error with getting race of car: {url}\nError: {err}")
                 elif "Двигатель:" in  main_data[i].text:
                     try:
                         fuel_data =  main_data[i+1].text.split(',')
                         try:
-                            auto_data["fuelValue"] = search(r'^\d*\.?\d*', fuel_data[0]).group(0)
+                            auto_data['carData']["fuelValue"] = search(r'^\d*\.?\d*', fuel_data[0]).group(0)
+                            if len(auto_data['carData']["fuelValue"]) < 1:
+                                raise AttributeError
                         except Exception as err:
-                            auto_data["fuelValue"] = None
+                            auto_data['carData']["fuelValue"] = None
                             self.log.warning(f"Can not get fuel volume of car: {url}\nError: {err}")
-                        auto_data["fuelName"] = fuel_data[1]
+                        auto_data['carData']["fuelName"] = fuel_data[1]
                     except Exception as err:
                         self.log.warning(f"Can not get fuel name of car: {url}\nError: {err}")
-                        auto_data["fuelName"] = None
+                        auto_data['carData']["fuelName"] = None
                 elif "Коробка передач:"  in  main_data[i].text:
-                        gearbox = main_data[i+1].text
+                        auto_data['carData']['gearBoxName'] = main_data[i+1].text
                 elif "Тип кузова:" in  main_data[i].text:
-                    category = main_data[i+1].text
+                    auto_data['carData']['category'] = main_data[i+1].text
                 elif "Год выпуска:" in main_data[i].text:
-                    auto_data["year"] = main_data[i+1].text
-            auto_data['hasDamage'] = None
-            auto_data['vin'] = None
-            auto_data['from'] = 'ParkDrive'
-            auto_data['linl'] = url
+                    auto_data['carData']["year"] = main_data[i+1].text
+            
+            if "category" not in auto_data['carData'].keys():
+                auto_data['carData']['category'] = None
+            
+            if "race" not in auto_data['carData'].keys():
+                auto_data['carData']['race'] = None
+
+            if "fuelName" not in auto_data['carData'].keys():
+                auto_data['carData']['fuelName'] = None
+            
+            if "fuelValue" not in auto_data['carData'].keys():
+                auto_data['carData']['fuelValue'] = None
+
+            if "year" not in auto_data['carData'].keys():
+                auto_data['carData']['year'] = None
+            
+            if "gearBoxName" not in auto_data['carData'].keys():
+                auto_data['carData']['gearBoxName'] = None
+
+            auto_data["carData"]['hasDamage'] = None
+            auto_data["carData"]['vin'] = None
+            auto_data["carData"]['from'] = 'ParkDrive'
+            auto_data["carData"]['link'] = url
         except Exception as err:
             self.log.error(f"Some error with getting car data: {url}\nError: {err}")
-        return {"main_data": auto_data, "gearbox": gearbox, "category": category}
-    def get_links_to_auto(self, soup):
-        #//div[contains(@class, 'car-card-info-wrap')]/a
-        pass
+        return auto_data
+    
     def __check_brand_model_exists(self, brand_name, model_name):
         brand_name = self.serializer.brand_model_serializer(brand_name)['data']
         model_name = self.serializer.brand_model_serializer(model_name)['data']
@@ -197,11 +223,6 @@ class ParkDriveParser:
                 self.can_not_find['brand'].append({"model": model_name, "brand": brand_name})
                 self.log.error(f"Can not find brand id of: {brand_name} and model id of model: {model_name}")
         return
-
-    async def start(self):
-        await self.parse_sitemap()
-        self.log.info(self.can_not_find)
-
 
 
 def run():

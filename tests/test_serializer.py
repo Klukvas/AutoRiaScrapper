@@ -29,7 +29,7 @@ class TestSerializer:
     
     def test_car_data_1(self):
         data = {
-            'main_data': {
+            'carData': {
                 'price': None,
                 'autoId': "2065429",
                 'race': "205",
@@ -42,20 +42,20 @@ class TestSerializer:
             }
 
         new_data = self.s.car_data_serializer(data)
-        assert new_data['main_data']['price']['UAH'] == None
-        assert new_data['main_data']['price']['USD'] == None
-        assert new_data['main_data']['price']['EUR'] == None
-        assert new_data['main_data']['autoId'] == 2065429
-        assert new_data['main_data']['race'] == 205
-        assert new_data['main_data']['fuelValue'] == 3.0
-        assert new_data['main_data']['fuelName'] == 'benzin'
-        assert new_data['main_data']['year'] == 2012
+        assert new_data['carData']['price']['UAH'] == None
+        assert new_data['carData']['price']['USD'] == None
+        assert new_data['carData']['price']['EUR'] == None
+        assert new_data['carData']['autoId'] == 2065429
+        assert new_data['carData']['race'] == 205
+        assert new_data['carData']['fuelValue'] == 3.0
+        assert new_data['carData']['fuelName'] == 'benzin'
+        assert new_data['carData']['year'] == 2012
         assert new_data['category'] == 'universal'
 
     
     def test_car_data_2(self):
         data = {
-            'main_data': {
+            'carData': {
                 'price': {
                     "UAH": '112',
                     "EUR": "232",
@@ -75,16 +75,16 @@ class TestSerializer:
 
         assert new_data["category"] == 'фыв'
         assert new_data["gearbox"] == 'не указано'
-        assert new_data["main_data"]['year'] == 2012
-        assert new_data["main_data"]['fuelName'] == None
-        assert new_data["main_data"]['fuelValue'] == 3.0
-        assert new_data["main_data"]['price']['EUR'] == 232
-        assert new_data["main_data"]['price']['UAH'] == 112
-        assert new_data["main_data"]['price']['USD'] == None
+        assert new_data["carData"]['year'] == 2012
+        assert new_data["carData"]['fuelName'] == None
+        assert new_data["carData"]['fuelValue'] == 3.0
+        assert new_data["carData"]['price']['EUR'] == 232
+        assert new_data["carData"]['price']['UAH'] == 112
+        assert new_data["carData"]['price']['USD'] == None
     
     def test_car_data_3(self):
         data = {
-            'main_data': {
+            'carData': {
                 'price': {
                     "UAH": '112',
                     "EUR": "232",
@@ -105,9 +105,9 @@ class TestSerializer:
 
         assert new_data["category"] == 'фыв'
         assert new_data["gearbox"] == 'paiq'
-        assert new_data["main_data"]['year'] == 2012
-        assert new_data["main_data"]['fuelName'] == 'TTEESSTT'
-        assert new_data["main_data"]['fuelValue'] == 3.0
-        assert new_data["main_data"]['price']['EUR'] == 232
-        assert new_data["main_data"]['price']['UAH'] == 112
-        assert new_data["main_data"]['price']['USD'] == None
+        assert new_data["carData"]['year'] == 2012
+        assert new_data["carData"]['fuelName'] == 'TTEESSTT'
+        assert new_data["carData"]['fuelValue'] == 3.0
+        assert new_data["carData"]['price']['EUR'] == 232
+        assert new_data["carData"]['price']['UAH'] == 112
+        assert new_data["carData"]['price']['USD'] == None
