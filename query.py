@@ -1,5 +1,8 @@
-from models import Brand, DatabaseClient, Model, Car, AdLastPage, GearBox, UnfindedDta
+from cmath import log
+from models import Brand, Category, DatabaseClient, Model, Car, AdLastPage, GearBox, UnfindedDta
 from sqlalchemy import text
+import json
+from serializer import Serializer
 
 class Query:
 
@@ -13,7 +16,7 @@ class Query:
 
     def save_brand(self, brand):
         new_brand = Brand(
-            brand_name = brand.lower()
+            brand_name = brand
         )
         try:
             self.db_client.session.add(new_brand)
@@ -52,14 +55,15 @@ class Query:
             self.db_client.session.add(new_page)
             self.db_client.session.commit()
 
-    def save_model(self, brandId, model):
+    def save_model(self, brandId:int, model:str):
         new_model = Model(
-            model_name = model.lower(),
+            model_name = model,
             brand_id = brandId
         )
         try:
             self.db_client.session.add(new_model)
             self.db_client.session.commit()
+            self.log.debug(f"Model: {model} saved")
         except Exception as err:
             self.log.error(f'Some error with saving model: {model}; brand id: {brandId};\nError: {err}')
             self.db_client.session.rollback()
@@ -106,14 +110,15 @@ class Query:
     
     def get_model_id(self, model_name):
         model_id = self.db_client.session.query(Model).filter(
-                text(f"LOWER(models.model_name) like '{model_name.lower()}'")
+                text(f"LOWER(models.model_name) like '{model_name}'")
             )
         ids = []
         for object_ in model_id:
             ids.append(object_.id)
         return ids
 
-    def save_car_data(self, brand, model, car_data, gearbox_id):
+    def save_car_data(self, brand, model, car_data, gearbox_id, category_id):
+        self.log.debug(car_data)
         new_car = Car(
             brand_id      = brand,
             model_id      = model,
@@ -130,6 +135,7 @@ class Query:
             link          = car_data['link'],
             vin           = car_data['vin'],
             parsed_from   = car_data['from'],
+            category_id   = category_id
         )
         try:
             self.db_client.session.add(new_car)
@@ -138,8 +144,111 @@ class Query:
         except Exception as err:
             self.db_client.session.rollback()
             return err,
+    
+    def get_cars_ids_with_empty_category(self, limit=10):
+        car_ids = self.db_client.session.query(Car).filter(
+            Car.category_id.is_(None)
+        ).limit(limit)
+        ids = []
+        for object_ in car_ids:
+            ids.append(object_.auto_id)
+        self.log.info(f"Getting new {limit} ids: {ids}")
+        return ids
+
+    def save_category(self, category):
+        new_category = Category(
+            category_name = category
+        )
+        try:
+            self.db_client.session.add(new_category)
+            self.db_client.session.commit()
+        except Exception as err:
+            self.log.error(f'Some error with saving gearBox: {category};\nError: {err.orig}')
+            self.db_client.session.rollback()
+        return
+
+    def get_category(self, category):
+        category_id = self.db_client.session.query(Category).filter(
+                text(f"LOWER(category.category_name) like '{category.lower()}'")
+            )
+        ids = []
+        for object_ in category_id:
+            ids.append(object_.id)
+        return ids
+
+    def upd_car_category(self, id:int, car_id:int):
+        try:
+
+            self.db_client.session.query(Car).\
+                filter(Car.auto_id == car_id).\
+                    update({"category_id": id})
+            self.db_client.session.commit()
+            self.log.info(f"Done with upd category of car with id: {car_id}")
+        except Exception as err:
+            self.log.error(f"Some error with saving updated category of car with id: {car_id}\nError: {err}")
+        return
+
+class OneTimeQuery:
+
+    def __init__(self, log) -> None:
+        self.db_client = DatabaseClient()
+        self.serializer = Serializer()
+        self.log = log
+    def update_models(self):
+        # models = self.db_client.session.query(Model).filter(
+        #         text(f"models.model_name like '%-%'")
+        #     )
+        models = self.db_client.session.query(Model).all()
+        for object_ in models:
+            try:
+                new_model_name = self.serializer.brand_model_serializer( object_.model_name )['data']
+                self.db_client.session.query(Model).\
+                    filter(Model.id == object_.id).\
+                        update({"model_name": new_model_name})
+                self.db_client.session.commit()
+                self.log.info(f"Upd model: {object_.model_name} to {new_model_name}")
+            except:
+                self.db_client.session.rollback()
+                self.log.warning(f"Can not update model: {object_.model_name}")
+                continue
+    def update_models(self):
+        # models = self.db_client.session.query(Model).filter(
+        #         text(f"models.model_name like '%-%'")
+        #     )
+        models = self.db_client.session.query(Model).all()
+        for object_ in models:
+            try:
+                new_model_name = self.serializer.brand_model_serializer( object_.model_name )['data']
+                self.db_client.session.query(Model).\
+                    filter(Model.id == object_.id).\
+                        update({"model_name": new_model_name})
+                self.db_client.session.commit()
+                self.log.info(f"Upd model: {object_.model_name} to {new_model_name}")
+            except:
+                self.db_client.session.rollback()
+                self.log.warning(f"Can not update model: {object_.model_name}")
+                continue
+                
+    
+    def upd_unexists_brand_model_file(self):
+        q2 = Query('asd')
+        unf = []
+        with open('data.json') as f:
+            data = json.load(f)
+        for item in data['model']:
+            mid = q2.get_model_id(item['model'])
+            if mid:
+                pass
+            else:
+                unf.append(item)
+        unf_models = json.dumps(item)
+        with open('unfindet_models.json', 'w') as f:
+            f.write(unf_models)
+
+
 if __name__ == "__main__":
-    d = DatabaseClient()
-    q = Query()
-    w = q.save_gear_box('автомат')
-    print(w)
+    from logger import Logger
+    log = Logger().custom_logger()
+    q = Query(log)
+    models = q.get_model_id('test')
+    print(models)

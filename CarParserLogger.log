@@ -1,0 +1,5 @@
+ERROR: 02/04  21:08:03: Can not make response to https://parkdrive.ua/sitemap
+Redirect to https://parkdrive.ua/sitemap/: 2640: MainProcess
+ERROR: 02/04  21:08:03: Error with getting soup
+Url: https://parkdrive.ua/sitemap
+Soup: None: 2640: MainProcess

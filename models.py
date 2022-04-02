@@ -1,12 +1,13 @@
 
 
+from enum import unique
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine, ForeignKey, Column, Integer, String, Boolean, text
+from sqlalchemy import create_engine, ForeignKey, Column, Integer, String, Boolean, text, DateTime
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy import func
 import configparser
-
+from datetime import datetime
 Base = declarative_base()
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -38,9 +39,16 @@ class Brand(Base):
 
     id = Column(Integer(), primary_key=True, autoincrement=True)
     brand_name = Column(String(), unique=True)
+    last_update = Column(DateTime(), default=datetime.utcnow())
     model = relationship("Model")
     car = relationship("Car")
 
+class Category(Base):
+    __tablename__ = 'category'
+
+    id = Column(Integer(), primary_key=True, autoincrement=True)
+    category_name = Column(String(), unique=True)
+    car = relationship("Car")
 
 class Model(Base):
     __tablename__ = 'models'
@@ -48,12 +56,14 @@ class Model(Base):
     id = Column(Integer(), primary_key=True, autoincrement=True)
     model_name = Column(String(), unique=True)
     brand_id = Column(Integer(), ForeignKey('brands.id'))
+    last_update = Column(DateTime(), default=datetime.utcnow())
     car = relationship("Car")
 
 class Car(Base):
     __tablename__ = 'cars_info'
 
     id = Column(Integer(), primary_key=True, autoincrement=True)
+    last_update = Column(DateTime(), default=datetime.utcnow())
     brand_id = Column(Integer(), ForeignKey('brands.id'))
     model_id = Column(Integer(), ForeignKey('models.id'))
     auto_id = Column(Integer(), unique=True)
@@ -69,11 +79,13 @@ class Car(Base):
     link = Column(String())
     vin = Column(String())
     parsed_from = Column(String())
+    category_id = Column(Integer(), ForeignKey('category.id'))
 
 class GearBox(Base):
     __tablename__ = 'gear_box'
     id = Column(Integer(), primary_key=True)
     gearbox_name = Column(String(), unique=True)
+    last_update = Column(DateTime(), default=datetime.utcnow())
     car = relationship('Car')
 
 
