@@ -3,9 +3,8 @@ from .riaApi import RiaApi
 from asyncstdlib.builtins import map as amap, tuple as atuple
 from main_parser import Parser
 
-class AutoRiaParser(Parser):
-
-
+class AutoRiaBrandModelParser(Parser):
+    
     def __init__(self, log) -> None:
         self.api = RiaApi(log)
         self.log = log
@@ -32,6 +31,35 @@ class AutoRiaParser(Parser):
                 raise AttributeError(f'Can not find id of brand: {brand_name}')
             all_brand_models = await self.api.get_models(brand['value'])
             self.save_parsed_models(all_brand_models, brand_id)
+    
+    async def run_brandModel_parser(self):
+        self.api.set_config()
+        await self.get_model_by_brand()
+
+
+class AutoRiaParser(Parser):
+
+
+    def __init__(self, log) -> None:
+        self.api = RiaApi(log)
+        self.log = log
+        super().__init__(log)
+
+    def bad_request_handler(self, response, for_upd=False):
+        if response == 429:
+            set_config_result = self.api.set_config()
+            if set_config_result:
+                self.log.info(f"Set new api key to api and continue work")
+                return True
+            else:
+                self.log.critical(f"Can not set new api key -> stop working and write last parsed page to db")
+                if not for_upd:
+                    self.q.upgrade_last_page(self.current_page)
+                return False
+        else:
+            if not for_upd:
+                self.q.upgrade_last_page(self.current_page)
+            return False
 
     async def get_car_data(self):
         self.log.info('Start collect cars data')
@@ -56,12 +84,8 @@ class AutoRiaParser(Parser):
 
 
 
-    async def run_brandModel_parser(self):
-        self.api.set_config()
-        await self.get_model_by_brand()
-
-
     async def run_car_info_parser(self):
+        print('Start')
         self.api.set_config()
         await self.get_car_data()
 

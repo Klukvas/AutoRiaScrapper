@@ -1,6 +1,7 @@
 import json
 import configparser
 import aiohttp
+from exceptions import AutoRiaException
 class RiaApi:
     
     def __init__(self, log) -> None:
@@ -72,8 +73,18 @@ class RiaApi:
             async with session.get(url) as resp:
                 if resp.status == 200:
                     json_response = json.loads( await resp.read())
-                    brand = json_response['markNameEng']
-                    model = json_response['modelNameEng']
+                    try:
+                        brand = json_response['markNameEng']
+                    except Exception as err:
+                        self.log.error(f"Can not find 'markNameEng' of car with id: {id}")
+                        return AutoRiaException
+
+                    try:
+                        model = json_response['modelNameEng']
+                    except Exception as err:
+                        self.log.error(f"Can not find 'modelNameEng' of car with id: {id}")
+                        return AutoRiaException
+
                     try:
                         if for_upd:
                             ad_data = {
@@ -106,11 +117,11 @@ class RiaApi:
                             }
                     except Exception as err:
                         self.log.error(f"Some error to collect data abt car\nError: {err}\nId: {id}")
-                        return 'KeyError'
+                        return AutoRiaException
                     return {"carData": ad_data, "brand":brand, "model":model }           
                 else:
                     self.log.error(f"Error of getting ids of ads with status code: {resp.status}; url: {resp.url}\nResponse text: {resp.read()}")
-                    return resp.status
+                    return AutoRiaException
 
 if __name__ == "__main__":
     import asyncio

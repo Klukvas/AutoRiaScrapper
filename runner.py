@@ -12,6 +12,8 @@ def start():
                 ria_parser.run(log)
             elif argument == '-ParkDrive':
                 drive_parser.run()
+            else:
+                log.error(f"Can not find your argument: {argument}")
     else:
         log.error(f'With run command u must to pass the one of arguments: ["-AutoRia"]')
         

@@ -9,21 +9,7 @@ class Parser:
         self.q = Query(log)
         self.serializer = Serializer(log)
 
-    def bad_request_handler(self, response, page, for_upd=False):
-        if response == 429:
-            set_config_result = self.api.set_config()
-            if set_config_result:
-                self.log.info(f"Set new api key to api and continue work")
-                return True
-            else:
-                self.log.critical(f"Can not set new api key -> stop working and write last parsed page to db")
-                if not for_upd:
-                    self.q.upgrade_last_page(page)
-                return False
-        else:
-            if not for_upd:
-                self.q.upgrade_last_page(page)
-            return False
+    
 
     def brand_exists(self, brand:str, re_call=0) -> list or None:
         brand_id = self.q.get_brand_id(brand)
@@ -83,9 +69,8 @@ class Parser:
         else:
             self.log.error(f"Can not parse car data: {args[0]}")
             return
-        self.log.debug(f'Car data: {type(car_data)}')
-        self.log.info(f"Start processing new auto {car_data['carData']['autoId']}\tParsed form: {car_data['carData']['from']}")
         if isinstance(car_data, dict):
+            self.log.info(f"Start processing new auto {car_data['carData']['autoId']}\tParsed form: {car_data['carData']['from']}")
             brand_name = self.serializer.brand_model_serializer(car_data['brand'])['data']
             brand_id = self.brand_exists(brand_name)
             if not brand_id:
@@ -111,7 +96,7 @@ class Parser:
             else:
                 self.log.error(f"Error while saving car data.\nError:{result}\ncar_data: {car_data['carData']}\nParsed form: {car_data['carData']['from']}")
         else:
-            if car_data['carData']['from'] == 'AuroRia':
+            if isinstance(car_data, type) and car_data().__class__.__name__ == 'AutoRiaException':
                 desigion = self.bad_request_handler(self.current_page)
                 if desigion:
                     self.process_ad_id(car_data)
