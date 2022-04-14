@@ -11,7 +11,7 @@ class ParkDriveParser(Parser):
     def __init__(self, log) -> None:
         super().__init__(log)
         self.main_url = 'https://parkdrive.ua'
-        self.start_url = "https://parkdrive.ua/sitemap"
+        self.start_url = "https://parkdrive.ua/sitemap/"
         self.can_not_find = {"model": [], "brand": [], "modelNbrand": {}}
 
     async def create_soup(self, url):
