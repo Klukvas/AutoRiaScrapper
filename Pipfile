@@ -12,8 +12,10 @@ aiohttp = "*"
 asyncstdlib = "*"
 beautifulsoup4 = "*"
 pytest = "*"
+flask = "*"
+pyjwt = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.9"
+python_version = "*"

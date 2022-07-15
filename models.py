@@ -1,38 +1,37 @@
-
-
-from enum import unique
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine, ForeignKey, Column, Integer, String, Boolean, text, DateTime
+from sqlalchemy import create_engine, ForeignKey, Column, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy_utils import database_exists, create_database
-from sqlalchemy import func
-import configparser
 from datetime import datetime
+from config_reader import get_config
 Base = declarative_base()
-config = configparser.ConfigParser()
-config.read('config.ini')
-db_creds = config['DataBase']
+
+
+
 class DatabaseClient:
     def __init__(self):
-        self.engine = create_engine(f'{db_creds["driver"]}://{db_creds["host"]}/{db_creds["db_name"]}')
+        db_url = get_config('CarsDataBase')
+        self.engine = create_engine(db_url)
         try:
             if not database_exists(self.engine.url):
                 create_database(self.engine.url)
         except Exception as err:
-            print(f"Some error with creatin database client: {err}")
-       
+            print(f"Some error with creating database client: {err}")
+
         Base.metadata.create_all(self.engine)
 
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
 
-class UnfindedDta(Base):
-    __tablename__ = 'unfinded_data'
-    
+
+class UndefinedData(Base):
+    __tablename__ = 'undefined_data'
+
     id = Column(Integer(), primary_key=True, autoincrement=True)
     type_data = Column(String())
     additional_data = Column(String())
     data_value = Column(String())
+
 
 class Brand(Base):
     __tablename__ = 'brands'
@@ -43,12 +42,14 @@ class Brand(Base):
     model = relationship("Model")
     car = relationship("Car")
 
+
 class Category(Base):
     __tablename__ = 'category'
 
     id = Column(Integer(), primary_key=True, autoincrement=True)
     category_name = Column(String(), unique=True)
     car = relationship("Car")
+
 
 class Model(Base):
     __tablename__ = 'models'
@@ -58,6 +59,7 @@ class Model(Base):
     brand_id = Column(Integer(), ForeignKey('brands.id'))
     last_update = Column(DateTime(), default=datetime.utcnow())
     car = relationship("Car")
+
 
 class Car(Base):
     __tablename__ = 'cars_info'
@@ -81,6 +83,7 @@ class Car(Base):
     parsed_from = Column(String())
     category_id = Column(Integer(), ForeignKey('category.id'))
 
+
 class GearBox(Base):
     __tablename__ = 'gear_box'
     id = Column(Integer(), primary_key=True)
@@ -92,6 +95,7 @@ class GearBox(Base):
 class AdLastPage(Base):
     __tablename__ = 'ad_last_page'
     page_num = Column(Integer(), primary_key=True)
+
 
 if __name__ == '__main__':
     db_client = DatabaseClient()

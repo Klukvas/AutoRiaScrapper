@@ -1,7 +1,8 @@
 from AutoRia import ria_parser
-import  sys
+import sys
 from logger import Logger
 from ParkDrive import drive_parser
+
 
 def start():
     log = Logger().custom_logger()
@@ -16,9 +17,6 @@ def start():
                 log.error(f"Can not find your argument: {argument}")
     else:
         log.error(f'With run command u must to pass the one of arguments: ["-AutoRia"]')
-        
-
-
 
 
 if __name__ == '__main__':

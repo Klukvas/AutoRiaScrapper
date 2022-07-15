@@ -1,16 +1,21 @@
 import asyncio
-from .riaApi import RiaApi 
+try:
+    from .riaApi import RiaApi
+except ImportError:
+    from riaApi import RiaApi
+
 from asyncstdlib.builtins import map as amap, tuple as atuple
 from main_parser import Parser
 
+
 class AutoRiaBrandModelParser(Parser):
-    
+
     def __init__(self, log) -> None:
         self.api = RiaApi(log)
         self.log = log
         super().__init__(log)
 
-    def save_parsed_models(self, models:list, brand_id:int) -> None:
+    def save_parsed_models(self, models: list, brand_id: int) -> None:
         for model in models:
             if isinstance(model, list):
                 for item in model:
@@ -31,14 +36,13 @@ class AutoRiaBrandModelParser(Parser):
                 raise AttributeError(f'Can not find id of brand: {brand_name}')
             all_brand_models = await self.api.get_models(brand['value'])
             self.save_parsed_models(all_brand_models, brand_id)
-    
+
     async def run_brandModel_parser(self):
         self.api.set_config()
         await self.get_model_by_brand()
 
 
 class AutoRiaParser(Parser):
-
 
     def __init__(self, log) -> None:
         self.api = RiaApi(log)
@@ -82,12 +86,11 @@ class AutoRiaParser(Parser):
                 break
             self.current_page += 1
 
-
-
     async def run_car_info_parser(self):
         print('Start')
         self.api.set_config()
         await self.get_car_data()
+
 
 def run(logger):
     loop = asyncio.get_event_loop()
@@ -95,12 +98,7 @@ def run(logger):
     loop.run_until_complete(parser.run_car_info_parser())
 
 
-
-
-
-
-
-
-
 if __name__ == "__main__":
-    run()
+    from logger import Logger
+    log = Logger().custom_logger()
+    run(log)
