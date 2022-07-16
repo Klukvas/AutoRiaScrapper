@@ -20,7 +20,7 @@ fileConfig(config.config_file_name)
 import sys                                             
 from os.path import abspath, dirname                   
 sys.path.append(dirname(dirname(abspath(__file__))))   
-from models import Base                        
+from Scrapper.models import Base
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

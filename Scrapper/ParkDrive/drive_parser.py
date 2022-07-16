@@ -3,14 +3,14 @@ from bs4 import BeautifulSoup
 import aiohttp
 from logger import Logger
 from re import search
-from main_parser import Parser
+from Scrapper.main_parser import Parser
 from asyncstdlib.builtins import map as amap, tuple as atuple
 
 
 class ParkDriveParser(Parser):
 
-    def __init__(self, log) -> None:
-        super().__init__(log)
+    def __init__(self, log, config, query, serializer) -> None:
+        super().__init__(log, query, serializer)
         self.main_url = 'https://parkdrive.ua'
         self.start_url = "https://parkdrive.ua/sitemap/"
         self.can_not_find = {"model": [], "brand": [], "modelNbrand": {}}
@@ -233,9 +233,8 @@ class ParkDriveParser(Parser):
         return
 
 
-def run():
-    log = Logger().custom_logger()
-    parser_example = ParkDriveParser(log)
+def run(log, config, query, serializer):
+    parser_example = ParkDriveParser(log, config, query, serializer)
     loop = asyncio.get_event_loop()
     loop.run_until_complete(parser_example.start())
 

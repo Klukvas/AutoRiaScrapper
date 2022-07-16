@@ -1,6 +1,8 @@
 import configparser
 import os
+import sys
 
+sys.path.append(os.getcwd())
 
 def get_parent_path(path):
     return os.path.abspath(

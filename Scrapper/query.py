@@ -1,8 +1,7 @@
-from cmath import log
-from models import Brand, Category, DatabaseClient, Model, Car, AdLastPage, GearBox, UndefinedData
+from Scrapper.models import Brand, Category, DatabaseClient, Model, Car, AdLastPage, GearBox, UndefinedData
 from sqlalchemy import text
 import json
-from serializer import Serializer
+from .serializer import Serializer
 
 
 class Query:

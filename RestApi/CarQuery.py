@@ -1,7 +1,7 @@
-from models import Brand, Category, DatabaseClient, Model, Car, GearBox
+from Scrapper.models import Car, Model, Brand, GearBox, Category, DatabaseClient
 
 
-class ApiQuery:
+class CarApiQuery:
 
     def __init__(self, log) -> None:
         self.log = log
@@ -78,8 +78,8 @@ class ApiQuery:
 
     def get_all_brands(self):
         brands = []
-        brands_objects = self.db_client.session.query(Brand)\
-            .with_entities(Brand.brand_name, Brand.id)\
+        brands_objects = self.db_client.session.query(Brand) \
+            .with_entities(Brand.brand_name, Brand.id) \
             .all()
         for item in brands_objects:
             brands.append({
@@ -103,6 +103,6 @@ class ApiQuery:
 
 
 if __name__ == "__main__":
-    q = ApiQuery('asd')
+    q = CarApiQuery('asd')
     a = q.get_model_by_brand()
     print(a)

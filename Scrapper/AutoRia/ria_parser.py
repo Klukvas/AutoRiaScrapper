@@ -1,19 +1,15 @@
 import asyncio
-try:
-    from .riaApi import RiaApi
-except ImportError:
-    from riaApi import RiaApi
-
+from .riaApi import RiaApi
 from asyncstdlib.builtins import map as amap, tuple as atuple
-from main_parser import Parser
+from Scrapper.main_parser import Parser
 
 
 class AutoRiaBrandModelParser(Parser):
 
-    def __init__(self, log) -> None:
+    def __init__(self, log, query, serializer) -> None:
         self.api = RiaApi(log)
         self.log = log
-        super().__init__(log)
+        super().__init__(log, query, serializer)
 
     def save_parsed_models(self, models: list, brand_id: int) -> None:
         for model in models:
@@ -44,10 +40,10 @@ class AutoRiaBrandModelParser(Parser):
 
 class AutoRiaParser(Parser):
 
-    def __init__(self, log) -> None:
-        self.api = RiaApi(log)
+    def __init__(self, log, config, query, serializer) -> None:
+        self.api = RiaApi(log, config)
         self.log = log
-        super().__init__(log)
+        super().__init__(log, query, serializer)
 
     def bad_request_handler(self, response, for_upd=False):
         if response == 429:
@@ -92,9 +88,9 @@ class AutoRiaParser(Parser):
         await self.get_car_data()
 
 
-def run(logger):
+def run(log, config, query, serializer):
     loop = asyncio.get_event_loop()
-    parser = AutoRiaParser(logger)
+    parser = AutoRiaParser(log, config, query, serializer)
     loop.run_until_complete(parser.run_car_info_parser())
 
 

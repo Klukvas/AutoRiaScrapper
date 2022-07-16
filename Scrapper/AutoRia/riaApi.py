@@ -1,22 +1,21 @@
 import json
-import configparser
 import aiohttp
-from exceptions import AutoRiaException
-from config_reader import get_config
+from ..exceptions import AutoRiaException
+
 
 class RiaApi:
 
-    def __init__(self, log) -> None:
+    def __init__(self, log, config) -> None:
         self.main_url = 'https://developers.ria.com/auto/'
         self.current_config = -1
         self.log = log
+        self.config = config
         self.api_key = None
 
     def set_config(self) -> bool:
-        config = get_config('AutoRia')
         self.current_config += 1
         try:
-            self.api_key = config['AutoRia']['api_keys'].split(',')[self.current_config + 1].strip()
+            self.api_key = self.config['AutoRia']['api_keys'].split(',')[self.current_config + 1].strip()
             return True
         except Exception as err:
             self.log.warning(f"Error with setting new congig with id: {self.current_config}\nError: {err}")

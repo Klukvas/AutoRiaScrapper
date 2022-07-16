@@ -1,14 +1,10 @@
-from ast import arg
-from query import Query
-from serializer import Serializer
-
 
 class Parser:
 
-    def __init__(self, log) -> None:
+    def __init__(self, log, query, serializer) -> None:
         self.log = log
-        self.q = Query(log)
-        self.serializer = Serializer(log)
+        self.q = query
+        self.serializer = serializer
 
     def brand_exists(self, brand: str, re_call=0) -> list or None:
         brand_id = self.q.get_brand_id(brand)
