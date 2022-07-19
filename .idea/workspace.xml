@@ -19,19 +19,42 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="466137f2-59a7-430b-8e42-f67251cfa3ff" name="Default Changelist" comment="branched from main with parkDrive" />
+    <list default="true" id="466137f2-59a7-430b-8e42-f67251cfa3ff" name="Default Changelist" comment="remove parkDrive &amp; small fixes in scrapper">
+      <change afterPath="$PROJECT_DIR$/Scrapper/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrapper/tests/CarParserLogger.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrapper/tests/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Scrapper/tests/test_main_parser.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jenkins" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CarParserLogger.log" beforeDir="false" afterPath="$PROJECT_DIR$/CarParserLogger.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scrapper/AutoRia/ria_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/AutoRia/ria_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scrapper/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scrapper/serializer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/serializer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scrapper/tests/test_serializer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/tests/test_serializer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="with_parkDrive" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2CAFPmuaaEU9AaUMv7syEu1vCSI" />
   <component name="ProjectLevelVcsManager">
@@ -41,14 +64,7 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-  </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python tests.pytest for Scrapper.tests.test_main_parser.TestMainParser">
     <configuration name="AutoRiaScrapper" type="PythonConfigurationType" factoryName="Python">
       <module name="AutoRiaScrapper" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -71,7 +87,63 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="pytest for Scrapper.tests.test_main_parser.TestMainParser" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="AutoRiaScrapper" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;Scrapper.tests.test_main_parser.TestMainParser&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for test_serializer.TestSerializer" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="AutoRiaScrapper" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Scrapper/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_serializer.TestSerializer&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for test_serializer.TestSerializer.test_car_data_1" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="AutoRiaScrapper" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Scrapper/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_serializer.TestSerializer.test_car_data_1&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python tests.pytest for Scrapper.tests.test_main_parser.TestMainParser" />
+        <item itemvalue="Python tests.pytest for test_serializer.TestSerializer.test_car_data_1" />
+        <item itemvalue="Python tests.pytest for test_serializer.TestSerializer" />
+      </list>
+    </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -83,6 +155,7 @@
       <option name="presentableId" value="Default" />
       <updated>1658237460545</updated>
       <workItem from="1658237463213" duration="449000" />
+      <workItem from="1658237923633" duration="1530000" />
     </task>
     <task id="LOCAL-00001" summary="branched from main with parkDrive">
       <created>1658237759340</created>
@@ -91,7 +164,14 @@
       <option name="project" value="LOCAL" />
       <updated>1658237759340</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="remove parkDrive &amp; small fixes in scrapper">
+      <created>1658254789872</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1658254789872</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -111,6 +191,7 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="branched from main with parkDrive" />
-    <option name="LAST_COMMIT_MESSAGE" value="branched from main with parkDrive" />
+    <MESSAGE value="remove parkDrive &amp; small fixes in scrapper" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove parkDrive &amp; small fixes in scrapper" />
   </component>
 </project>

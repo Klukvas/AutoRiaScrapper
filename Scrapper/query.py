@@ -2,6 +2,8 @@ from Scrapper.models import Brand, Category, DatabaseClient, Model, Car, AdLastP
 from sqlalchemy import text
 import json
 from .serializer import Serializer
+from psycopg2 import errors as postgres_errors
+from sqlalchemy.exc import IntegrityError
 
 
 class Query:
@@ -116,7 +118,6 @@ class Query:
         return ids
 
     def save_car_data(self, brand, model, car_data, gearbox_id, category_id):
-        self.log.debug(car_data)
         new_car = Car(
             brand_id=brand,
             model_id=model,
@@ -138,7 +139,16 @@ class Query:
         try:
             self.db_client.session.add(new_car)
             self.db_client.session.commit()
-            return 1
+            return True
+        except IntegrityError as err:
+            '''
+            todo: add Enums of response
+            '''
+            if isinstance(err.orig, postgres_errors.UniqueViolation):
+                self.db_client.session.rollback()
+                return True
+            self.db_client.session.rollback()
+            return err,
         except Exception as err:
             self.db_client.session.rollback()
             return err,

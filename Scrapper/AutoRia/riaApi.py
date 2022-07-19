@@ -15,7 +15,8 @@ class RiaApi:
     def set_config(self) -> bool:
         self.current_config += 1
         try:
-            self.api_key = self.config['AutoRia']['api_keys'].split(',')[self.current_config + 1].strip()
+            self.api_key = self.config['AutoRia']['api_keys']\
+                .split(',')[self.current_config + 1].strip()
             return True
         except Exception as err:
             self.log.warning(f"Error with setting new congig with id: {self.current_config}\nError: {err}")
@@ -33,7 +34,8 @@ class RiaApi:
                     return json_response
                 else:
                     self.log.error(
-                        f"Error of getting brand with status code: {resp.status}\nResponse text: {resp.read()}")
+                        f"Error of getting brand with status code: {resp.status}\nResponse text: {resp.read()}"
+                    )
                     return resp.status
 
     async def get_models(self, mark_id: int) -> dict or int:
@@ -70,11 +72,11 @@ class RiaApi:
                         f"Error of getting ids of ads with status code: {resp.status}; url: {resp.url}\nResponse text: {await resp.read()}")
                     return resp.status
 
-    async def get_ad_info_by_id(self, id: int, for_upd=False) -> list or int:
+    async def get_ad_info_by_id(self, _id: int, for_upd=False) -> list or int:
         """
         https://developers.ria.com/auto/info?api_key=YOUR_API_KEY&auto_id=YOUR_ID
         """
-        url = self.main_url + f'info?api_key={self.api_key}&auto_id={id}'
+        url = self.main_url + f'info?api_key={self.api_key}&auto_id={_id}'
         async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
             async with session.get(url) as resp:
                 if resp.status == 200:
@@ -82,14 +84,14 @@ class RiaApi:
                     try:
                         brand = json_response['markNameEng']
                     except Exception as err:
-                        self.log.error(f"Can not find 'markNameEng' of car with id: {id}")
-                        return AutoRiaException
+                        self.log.error(f"Can not find 'markNameEng' of car with id: {_id}")
+                        AutoRiaException(f"Can not find 'markNameEng' of car with id: {_id}")
 
                     try:
                         model = json_response['modelNameEng']
                     except Exception as err:
-                        self.log.error(f"Can not find 'modelNameEng' of car with id: {id}")
-                        return AutoRiaException
+                        self.log.error(f"Can not find 'modelNameEng' of car with id: {_id}")
+                        AutoRiaException(f"Can not find 'modelNameEng' of car with id: {_id}")
 
                     try:
                         if for_upd:
@@ -122,13 +124,22 @@ class RiaApi:
                                 "from": 'AutoRia'
                             }
                     except Exception as err:
-                        self.log.error(f"Some error to collect data abt car\nError: {err}\nId: {id}")
-                        return AutoRiaException
+                        self.log.error(f"Some error to collect data abt car\nError: {err}\nId: {_id}")
+                        AutoRiaException(f"Some error to collect data abt car\nError: {err}\nId: {_id}")
                     return {"carData": ad_data, "brand": brand, "model": model}
                 else:
                     self.log.error(
-                        f"Error of getting ids of ads with status code: {resp.status}; url: {resp.url}\nResponse text: {resp.read()}")
-                    return AutoRiaException
+                        f"""
+                            Error of getting ids of ads with status code: {resp.status}; 
+                            url: {resp.url}\nResponse text: {resp.read()}
+                        """
+                    )
+                    AutoRiaException(
+                        f"""
+                            Error of getting ids of ads with status code: {resp.status}; 
+                            url: {resp.url}\nResponse text: {resp.read()}
+                        """
+                    )
 
 
 if __name__ == "__main__":
