@@ -3,9 +3,7 @@ pipeline {
     stages {
        stage('init') {
           steps {
-             sh """
-                    pipenv install
-                """
+             sh "pipenv install"
           }
        }
        stage(test) {
