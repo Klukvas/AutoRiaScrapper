@@ -1,19 +1,16 @@
 pipeline {
     agent any
     stages {
-       stage('build') {
+       stage('init') {
           steps {
-             echo 'build'
+             sh """
+                    pipenv install
+                """
           }
        }
        stage(test) {
            steps {
-               echo 'test'
-           }
-       }
-       stage(test1) {
-           steps {
-               echo 'test123999'
+               sh 'pipenv run pytest -s -vv'
            }
        }
     }
