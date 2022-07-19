@@ -2,14 +2,14 @@ import asyncio
 from .riaApi import RiaApi
 from asyncstdlib.builtins import map as amap, tuple as atuple
 from Scrapper.main_parser import Parser
-
+from ..exceptions import AutoRiaException
 
 class AutoRiaBrandModelParser(Parser):
 
-    def __init__(self, log, query, serializer) -> None:
-        self.api = RiaApi(log)
-        self.log = log
-        super().__init__(log, query, serializer)
+    def __init__(self, logger, config, query, serializer) -> None:
+        self.api = RiaApi(logger, config)
+        self.log = logger
+        super().__init__(logger, query, serializer)
 
     def save_parsed_models(self, models: list, brand_id: int) -> None:
         for model in models:
@@ -40,10 +40,11 @@ class AutoRiaBrandModelParser(Parser):
 
 class AutoRiaParser(Parser):
 
-    def __init__(self, log, config, query, serializer) -> None:
-        self.api = RiaApi(log, config)
-        self.log = log
-        super().__init__(log, query, serializer)
+    def __init__(self, logger, config, query, serializer) -> None:
+        self.api = RiaApi(logger, config)
+        self.log = logger
+        self.current_page = None
+        super().__init__(logger, query, serializer)
 
     def bad_request_handler(self, response, for_upd=False):
         if response == 429:
@@ -71,30 +72,50 @@ class AutoRiaParser(Parser):
         while True:
             ad_ids = await self.api.get_ads_ids(self.current_page)
             if isinstance(ad_ids, list) and len(ad_ids) > 0:
-                await atuple(amap(self.process_ad_id, ad_ids))
+                # ad_ids = ['123123', '554322', ....'5345345']
+                for item in ad_ids:
+                    try:
+                        car_data = await self.api.get_ad_info_by_id(item)
+                    except AutoRiaException:
+                        continue
+                    except Exception as error:
+                        self.log.error(
+                            f"Some error with getting car data for ad with id: {item}\n{error}"
+                        )
+                    else:
+                        self.process_ad_id(car_data)
+
+
+                # await atuple(
+                #     amap(
+                #         self.process_ad_id,
+                #         ad_ids
+                #     )
+                # )
             elif isinstance(ad_ids, list) and len(ad_ids) < 0:
                 self.log.info(f'Work is done, current pool of ids are empty')
                 break
             else:
-                desigion = self.bad_request_handler(ad_ids)
-                if desigion:
+                if self.bad_request_handler(ad_ids):
                     await self.get_car_data()
                 break
             self.current_page += 1
 
     async def run_car_info_parser(self):
-        print('Start')
         self.api.set_config()
         await self.get_car_data()
 
 
-def run(log, config, query, serializer):
+def run(logger, config, query, serializer):
     loop = asyncio.get_event_loop()
-    parser = AutoRiaParser(log, config, query, serializer)
-    loop.run_until_complete(parser.run_car_info_parser())
+    parser = AutoRiaParser(logger, config, query, serializer)
+    loop.run_until_complete(
+        parser.run_car_info_parser()
+    )
 
 
 if __name__ == "__main__":
     from logger import Logger
+
     log = Logger().custom_logger()
     run(log)

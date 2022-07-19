@@ -56,51 +56,58 @@ class Parser:
             self.q.save_unfinded_data('category', category, None)
             return None
 
-    async def process_ad_id(self, *args):
-        if isinstance(args[0], str):
-            car_data = await self.api.get_ad_info_by_id(args[0])
-        elif isinstance(args[0], dict):
-            car_data = args[0]
-        else:
-            self.log.error(f"Can not parse car data: {args[0]}")
-            return
-        if isinstance(car_data, dict):
-            self.log.info(
-                f"Start processing new auto {car_data['carData']['autoId']}\tParsed form: {car_data['carData']['from']}"
+    def process_ad_id(self, car_data: dict):
+        # if isinstance(args[0], str):
+        #     car_data = await self.api.get_ad_info_by_id(args[0])
+        # elif isinstance(args[0], dict):
+        #     car_data = args[0]
+        # else:
+        #     self.log.error(f"Can not parse car data: {args[0]}")
+        #     return
+        # if isinstance(car_data, dict):
+        self.log.info(
+            f"Start processing new auto {car_data['carData']['autoId']}\tParsed form: {car_data['carData']['from']}"
+        )
+        brand_name = self.serializer.brand_model_serializer(car_data['brand'])['data']
+        brand_id = self.brand_exists(brand_name)
+        if not brand_id:
+            self.log.error(
+                f"Some error with getting brandId\nauto_id: {car_data['carData']['autoId']}\nbrand: {brand_name}\nParsed form: {car_data['carData']['from']}"
             )
-            brand_name = self.serializer.brand_model_serializer(car_data['brand'])['data']
-            brand_id = self.brand_exists(brand_name)
-            if not brand_id:
-                self.log.error(
-                    f"Some error with getting brandId\nauto_id: {car_data['carData']['autoId']}\nbrand: {brand_name}\nParsed form: {car_data['carData']['from']}")
-                return
-            model_name = self.serializer.brand_model_serializer(car_data['model'])['data']
-            model_id = self.model_exists(brand_id, brand_name, model_name)
-            if not model_id:
-                self.log.error(
-                    f"Some error with getting modelId\nauto_id: {car_data['carData']['autoId']}\nbrand: {brand_id}\nmodel:{model_name}\tlen model: {len(model_name)}\nParsed form: {car_data['carData']['from']}")
-                return
-            gearbox_id = self.gearbox_exists(car_data['carData']['gearBoxName'])
-            if not gearbox_id:
-                self.log.error(
-                    f"Some error with getting modelId\nauto_id: {car_data['carData']['autoId']}\nbrand: {brand_id}\nmodel:{model_id}\nGearBoxName: {car_data['carData']['gearBoxName']}\nParsed form: {car_data['carData']['from']}")
-                return
-            category_id = self.category_exists(car_data['carData']['category'])
-            if not category_id:
-                self.log.error(
-                    f"Some error with getting category id\nauto_id: {car_data['carData']['autoId']}\nbrand: {brand_id}\nmodel:{model_id}\nGear box id:{gearbox_id}\nCategory: {car_data['carData']['category']}\nParsed form: {car_data['carData']['from']}")
-                return
-            result = True
-            result = self.q.save_car_data(brand_id, model_id, car_data['carData'], gearbox_id, category_id)
-            if isinstance(result, int):
-                self.log.info(
-                    f"Car with id: {car_data['carData']['autoId']} saved.\nParsed form: {car_data['carData']['from']}")
-            else:
-                self.log.error(
-                    f"Error while saving car data.\nError:{result}\ncar_data: {car_data['carData']}\nParsed form: {car_data['carData']['from']}")
+            return
+        model_name = self.serializer.brand_model_serializer(car_data['model'])['data']
+        model_id = self.model_exists(brand_id, brand_name, model_name)
+        if not model_id:
+            self.log.error(
+                f"Some error with getting modelId\nauto_id: {car_data['carData']['autoId']}\nbrand: {brand_id}\nmodel:{model_name}\tlen model: {len(model_name)}\nParsed form: {car_data['carData']['from']}")
+            return
+        gearbox_id = self.gearbox_exists(car_data['carData']['gearBoxName'])
+        if not gearbox_id:
+            self.log.error(
+                f"Some error with getting modelId\nauto_id: {car_data['carData']['autoId']}\nbrand: {brand_id}\nmodel:{model_id}\nGearBoxName: {car_data['carData']['gearBoxName']}\nParsed form: {car_data['carData']['from']}")
+            return
+        category_id = self.category_exists(car_data['carData']['category'])
+        if not category_id:
+            self.log.error(
+                f"Some error with getting category id\nauto_id: {car_data['carData']['autoId']}\nbrand: {brand_id}\nmodel:{model_id}\nGear box id:{gearbox_id}\nCategory: {car_data['carData']['category']}\nParsed form: {car_data['carData']['from']}")
+            return
+        result = self.q.save_car_data(
+            brand_id,
+            model_id, car_data['carData'],
+            gearbox_id, category_id
+        )
+        if isinstance(result, bool):
+            self.log.info(
+                f"Car with id: {car_data['carData']['autoId']} saved.\nParsed form: {car_data['carData']['from']}")
         else:
-            if isinstance(car_data, type) and car_data().__class__.__name__ == 'AutoRiaException':
-                desigion = self.bad_request_handler(self.current_page)
-                if desigion:
-                    self.process_ad_id(car_data)
-                return
+            self.log.error(f"""
+                    Error while saving car data.
+                    Error:{str(result)}
+                    Car_data: {car_data['carData']}
+                """.encode('utf-8'))
+        # else:
+        #     if isinstance(car_data, type) and car_data().__class__.__name__ == 'AutoRiaException':
+        #         desigion = self.bad_request_handler(self.current_page)
+        #         if desigion:
+        #             self.process_ad_id(car_data)
+        #         return

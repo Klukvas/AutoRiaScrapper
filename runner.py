@@ -1,10 +1,10 @@
 from Scrapper.AutoRia import ria_parser
-from Scrapper.ParkDrive import drive_parser
 from Scrapper.query import Query
 from Scrapper.serializer import Serializer
 import sys
 from logger import Logger
 from config_reader import get_config
+
 
 def start():
     argumentList = sys.argv[1:]
@@ -16,8 +16,6 @@ def start():
             if argument == '-AutoRia':
                 config = get_config('AutoRia')
                 ria_parser.run(log, config, query, serializer)
-            elif argument == '-ParkDrive':
-                drive_parser.run(log, config, query, serializer)
             else:
                 log.error(f"Can not find your argument: {argument}")
     else:

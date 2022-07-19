@@ -19,19 +19,41 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="466137f2-59a7-430b-8e42-f67251cfa3ff" name="Default Changelist" comment="branched from main with parkDrive" />
+    <list default="true" id="466137f2-59a7-430b-8e42-f67251cfa3ff" name="Default Changelist" comment="branched from main with parkDrive">
+      <change beforePath="$PROJECT_DIR$/.idea/AutoRiaScrapper.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AutoRiaScrapper.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CarParserLogger.log" beforeDir="false" afterPath="$PROJECT_DIR$/CarParserLogger.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scrapper/AutoRia/riaApi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/AutoRia/riaApi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scrapper/AutoRia/ria_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/AutoRia/ria_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scrapper/ParkDrive/drive_parser.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scrapper/exceptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/exceptions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scrapper/main_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/main_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scrapper/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/runner.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="with_parkDrive" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2CAFPmuaaEU9AaUMv7syEu1vCSI" />
   <component name="ProjectLevelVcsManager">
@@ -40,13 +62,6 @@
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
-  </component>
-  <component name="PropertiesComponent">
-    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunManager">
     <configuration name="AutoRiaScrapper" type="PythonConfigurationType" factoryName="Python">
@@ -72,6 +87,7 @@
       <method v="2" />
     </configuration>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -83,6 +99,7 @@
       <option name="presentableId" value="Default" />
       <updated>1658237460545</updated>
       <workItem from="1658237463213" duration="449000" />
+      <workItem from="1658237923633" duration="1530000" />
     </task>
     <task id="LOCAL-00001" summary="branched from main with parkDrive">
       <created>1658237759340</created>
