@@ -3,12 +3,12 @@ pipeline {
     stages {
        stage('init') {
           steps {
-             sh 'pipenv install'
+             bat 'pipenv install'
           }
        }
        stage('test') {
            steps {
-               sh 'pipenv run pytest -s -vv'
+               bat 'pipenv run pytest -s -vv'
            }
        }
     }
