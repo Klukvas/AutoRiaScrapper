@@ -4,6 +4,8 @@ import json
 from .serializer import Serializer
 from psycopg2 import errors as postgres_errors
 from sqlalchemy.exc import IntegrityError
+
+
 class Query:
 
     def __init__(self, log) -> None:

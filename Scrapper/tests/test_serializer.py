@@ -1,10 +1,5 @@
-import os
-import sys
-
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(SCRIPT_DIR))
 from Scrapper.serializer import Serializer
-from logger import Logger
+from ...logger import Logger
 
 
 class TestSerializer:
@@ -31,6 +26,7 @@ class TestSerializer:
         data = {
             'carData': {
                 'price': None,
+                'category': 'универс',
                 'autoId': "2065429",
                 'race': "205",
                 'fuelValue': "3",
@@ -38,7 +34,6 @@ class TestSerializer:
                 'year': "2012",
             },
             'gearbox': 'ручная / механика',
-            'category': 'универс',
         }
 
         new_data = self.s.car_data_serializer(data)
@@ -50,7 +45,7 @@ class TestSerializer:
         assert new_data['carData']['fuelValue'] == 3.0
         assert new_data['carData']['fuelName'] == 'benzin'
         assert new_data['carData']['year'] == 2012
-        assert new_data['category'] == 'universal'
+        assert new_data['carData']['category'] == 'universal'
 
     def test_car_data_2(self):
         data = {
@@ -60,20 +55,21 @@ class TestSerializer:
                     "EUR": "232",
                     "USD": None
                 },
+                'gearBoxName': None,
                 'autoId': "2065429",
                 'race': "205",
                 'fuelValue': "3",
                 'fuelName': None,
                 'year': "2012",
             },
-            'gearbox': None,
+
             'category': 'фыв',
         }
 
         new_data = self.s.car_data_serializer(data)
 
         assert new_data["category"] == 'фыв'
-        assert new_data["gearbox"] == 'не указано'
+        assert new_data["carData"]["gearBoxName"] == 'не указано'
         assert new_data["carData"]['year'] == 2012
         assert new_data["carData"]['fuelName'] is None
         assert new_data["carData"]['fuelValue'] == 3.0

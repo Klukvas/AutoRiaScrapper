@@ -5,7 +5,29 @@ class Serializer:
     
     def __init__(self, log) -> None:
         self.log = log
-    
+        self.gear_box_translitor = [
+                "автомат",
+                "ручная / механика",
+                "типтроник",
+                "не указано",
+                "вариатор",
+                "робот"
+            ]
+        self.category_translitor = {
+                "седан": "sedan",
+                "лимузин": "limuzin",
+                "универсал": "universal",
+                "универс": "universal",
+                "хэтчбек": "khetchbek",
+                "внедорожник": "vnedorozhnik-krossover",
+                "минивен": "miniven",
+                "купе": "kupe",
+                "фургон": "legkovoj-furgon-do-1-5-t",
+                "лифтбек": "liftbek",
+                "пикап": "pikap",
+                "комбайн": "kombajn",
+                "кабриолет": "kabriolet"
+            }
     def brand_model_serializer(self, brand_model:str) -> dict:
         brand_model = brand_model.\
             replace("-", " ").\
@@ -24,7 +46,7 @@ class Serializer:
                     strip()                                                    
         return {"data": brand_model}
 
-    def car_data_serializer(self, data:dict) -> dict:
+    def car_data_serializer(self, data: dict) -> dict:
         if data["carData"]['price']:
             
             if data["carData"]['price']['UAH']:
@@ -74,17 +96,10 @@ class Serializer:
                     break
         if data["carData"]['year']:
             data["carData"]['year'] = int(data["carData"]['year'])
-        if data["carData"]['gearBoxName']:
+        if 'gearBoxName' in data["carData"].keys() and \
+                data["carData"]['gearBoxName'] in self.gear_box_translitor:
             changed = False
-            gear_box_translitor = [
-                "автомат",
-                "ручная / механика",
-                "типтроник",
-                "не указано",
-                "вариатор",
-                "робот"
-            ]
-            for item in gear_box_translitor:
+            for item in self.gear_box_translitor:
                 if data["carData"]['gearBoxName'].lower().strip() in item:
                     data["carData"]['gearBoxName'] = item
                     changed = True
@@ -93,24 +108,11 @@ class Serializer:
                 self.log.error(f"Can not find gearbox of car: {data['link']}")
         else:
             data["carData"]['gearBoxName'] = 'не указано'
-        if data["carData"]['category']:
-            category_translitor = {
-                "седан": "sedan",
-                "лимузин": "limuzin",
-                "универсал": "universal",
-                "хэтчбек": "khetchbek",
-                "внедорожник": "vnedorozhnik-krossover",
-                "минивен": "miniven",
-                "купе": "kupe",
-                "фургон": "legkovoj-furgon-do-1-5-t",
-                "лифтбек": "liftbek",
-                "пикап": "pikap",
-                "комбайн": "kombajn",
-                "кабриолет": "kabriolet"
-            }
-            for item in category_translitor.keys():
-                if data["carData"]['category'].lower().strip() in item:
-                    data["carData"]['category'] = category_translitor[item]
+        if 'category' in data['carData'].keys() and \
+                data['carData']['category'] in self.category_translitor.keys():
+            for item in self.category_translitor.keys():
+                if data["carData"]['category'].lower().strip() == item:
+                    data["carData"]['category'] = self.category_translitor[item]
                     break
         else:
             data["carData"]['category'] = 'drugoj'
