@@ -2,8 +2,15 @@ from Scrapper.serializer import Serializer
 from Scrapper.main_parser import Parser
 from Scrapper.query import Query
 from Scrapper.models import *
-from ...logger import Logger
-
+try:
+    from ...logger import Logger
+except ImportError:
+    import sys
+    import os
+    sys.path.append(
+        ".."
+    )
+    from logger import Logger
 
 class TestMainParser:
     def setup(self):
