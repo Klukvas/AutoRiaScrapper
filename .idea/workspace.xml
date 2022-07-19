@@ -19,10 +19,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="466137f2-59a7-430b-8e42-f67251cfa3ff" name="Default Changelist" comment="dummy#4">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CarParserLogger.log" beforeDir="false" afterPath="$PROJECT_DIR$/CarParserLogger.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scrapper/tests/test_main_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/tests/test_main_parser.py" afterDir="false" />
+    <list default="true" id="466137f2-59a7-430b-8e42-f67251cfa3ff" name="Default Changelist" comment="import fix">
+      <change beforePath="$PROJECT_DIR$/Scrapper/tests/test_serializer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Scrapper/tests/test_serializer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -204,7 +202,14 @@
       <option name="project" value="LOCAL" />
       <updated>1658263733047</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="import fix">
+      <created>1658266953477</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1658266953477</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -230,6 +235,7 @@
     <MESSAGE value="dummy" />
     <MESSAGE value="dummy#2" />
     <MESSAGE value="dummy#4" />
-    <option name="LAST_COMMIT_MESSAGE" value="dummy#4" />
+    <MESSAGE value="import fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="import fix" />
   </component>
 </project>

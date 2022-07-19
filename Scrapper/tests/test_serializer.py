@@ -1,5 +1,13 @@
 from Scrapper.serializer import Serializer
-from ...logger import Logger
+try:
+    from ...logger import Logger
+except ImportError:
+    import sys
+    import os
+    sys.path.append(
+        ".."
+    )
+    from logger import Logger
 
 
 class TestSerializer:
