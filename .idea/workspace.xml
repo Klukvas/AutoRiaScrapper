@@ -19,8 +19,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="466137f2-59a7-430b-8e42-f67251cfa3ff" name="Default Changelist" comment="added tests">
-      <change beforePath="$PROJECT_DIR$/jenkins" beforeDir="false" afterPath="$PROJECT_DIR$/jenkins" afterDir="false" />
+    <list default="true" id="466137f2-59a7-430b-8e42-f67251cfa3ff" name="Default Changelist" comment="jenkins -&gt; Jenkinsfile">
+      <change beforePath="$PROJECT_DIR$/Jenkinsfile" beforeDir="false" afterPath="$PROJECT_DIR$/Jenkinsfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -167,7 +167,14 @@
       <option name="project" value="LOCAL" />
       <updated>1658262255586</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="jenkins -&gt; Jenkinsfile">
+      <created>1658262479144</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1658262479144</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -189,6 +196,7 @@
     <MESSAGE value="branched from main with parkDrive" />
     <MESSAGE value="remove parkDrive &amp; small fixes in scrapper" />
     <MESSAGE value="added tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="added tests" />
+    <MESSAGE value="jenkins -&gt; Jenkinsfile" />
+    <option name="LAST_COMMIT_MESSAGE" value="jenkins -&gt; Jenkinsfile" />
   </component>
 </project>
