@@ -25,7 +25,6 @@ class TestMainParser:
         Проверяем что найдет существующий бренд
         """
         brand = self.db_client.session.query(Brand).limit(1)
-        assert 2==3
         assert self.parser.brand_exists(brand[0].brand_name)
 
     def test_brand_exists_2(self):
