@@ -1,5 +1,6 @@
 import logging
 
+
 class CustomFormatter(logging.Formatter):
     """Logging Formatter to add colors and count warning / errors"""
 
@@ -24,7 +25,7 @@ class CustomFormatter(logging.Formatter):
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
-        
+
 class Logger:
     def custom_logger(self):
         log = logging.getLogger('CarParserLogger')
@@ -41,5 +42,5 @@ class Logger:
 
             log.addHandler(file)
             log.addHandler(console)
-            
+
         return log
