@@ -44,3 +44,4 @@ class Logger:
             log.addHandler(console)
 
         return log
+
