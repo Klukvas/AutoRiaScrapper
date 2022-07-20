@@ -65,7 +65,7 @@ class Query:
         try:
             self.db_client.session.add(new_model)
             self.db_client.session.commit()
-            self.log.debug(f"Model: {model} saved")
+            self.log.info(f"Model: {model} saved")
         except Exception as err:
             self.log.error(f'Some error with saving model: {model}; brand id: {brandId};\nError: {err}')
             self.db_client.session.rollback()

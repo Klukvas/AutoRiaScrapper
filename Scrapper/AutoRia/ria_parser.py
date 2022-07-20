@@ -76,7 +76,6 @@ class AutoRiaParser(Parser):
                 for item in ad_ids:
                     try:
                         car_data = await self.api.get_ad_info_by_id(item)
-                        self.log.debug(car_data)
                     except AutoRiaException:
                         continue
                     except Exception as error:
