@@ -8,9 +8,9 @@ from sqlalchemy.exc import IntegrityError
 
 class Query:
 
-    def __init__(self, log) -> None:
+    def __init__(self, logger) -> None:
         self.db_client = DatabaseClient()
-        self.log = log
+        self.log = logger
 
     def __del__(self) -> None:
         self.db_client.session.commit()
