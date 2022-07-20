@@ -12,6 +12,7 @@ except ImportError:
     )
     from logger import Logger
 
+
 class TestMainParser:
     def setup(self):
         self.log = Logger().custom_logger()
