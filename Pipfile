@@ -18,6 +18,7 @@ flask-sqlalchemy = "*"
 flask-bcrypt = "*"
 flask-cors = "*"
 flask-restx = "*"
+allure-pytest = "*"
 
 [dev-packages]
 
