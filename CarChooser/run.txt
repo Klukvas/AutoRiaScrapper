@@ -1,0 +1,7 @@
+Setup
+1) activate environment >> pipenv shell
+2) download packages >> pipenv install
+3) change data in config.ini file
+4) change sqlalchemy.url in alembic.ini file
+*not required 5) find the latest migration in migrations > versions and type in cmd: alembic stamp {Revision ID}
+6)

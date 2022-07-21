@@ -18,10 +18,9 @@ def start():
         serializer = Serializer(log)
         for argument in argument_list:
             if argument == '-AutoRia':
-                print('asd')
                 config = get_config('AutoRia')
                 ria_parser.run(log, config, query, serializer)
-            elif argument == '-runserver':
+            elif argument == 'runserver':
                 api_runner.runserver()
             else:
                 log.error(f"Can not find your argument: {argument}")
