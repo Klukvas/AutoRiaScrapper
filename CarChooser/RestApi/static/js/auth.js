@@ -1,9 +1,10 @@
+import {check_token_is_alive, get_full_url} from './useful.js';
+
 $(document).ready(async function(){
 
     await check_token_is_alive();
 
     $("#signUpBtn").click(async() => {
-      console.log("asd1")
             await register_process()
         }
       );
@@ -15,23 +16,6 @@ $(document).ready(async function(){
       );
 });
 
-async function check_token_is_alive() {
-    const token = localStorage['auth_token'];
-    if(token){
-        const is_token_alive = await axios.get(
-            'http://127.0.0.1:5000/auth/status',
-            {
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            }
-        );
-        console.log(is_token_alive)
-        if(is_token_alive.data.status === 'success'){
-            window.location.href = "http://127.0.0.1:5000/cars/dashboard";
-        }
-    }
-}
 
 
 function validateEmail(email){
@@ -43,11 +27,11 @@ async function register_process(){
     let email = $('#email').val();
     const is_email_valid = validateEmail(email);
     if(is_email_valid){
-        let response = await auth(email, password, 'auth/register');
+        let response = await auth(email, password, '/auth/register');
         //save received token and do redirect
         if(response.data.status === 'success'){
             localStorage['auth_token'] = response.data.auth_token;
-            window.location.href = "http://127.0.0.1:5000/cars/dashboard";
+            window.location.href = get_full_url("/cars/dashboard");
         }
     }else{
         let email_label_error = $(".auth-label-error-email")
@@ -63,10 +47,8 @@ async function register_process(){
 }
 async function auth(email, password, uri){
     try {
-        console.log("asd")
-        //send auth request
         return await axios.post(
-            'http://127.0.0.1:5000/' + uri,
+            get_full_url(uri),
             {
                 "email": email,
                 "password": password
@@ -89,11 +71,11 @@ async function login_process() {
     let email = $('#email').val();
     const is_email_valid = validateEmail(email);
     if(is_email_valid){
-        let response = await auth(email, password, 'auth/login');
+        let response = await auth(email, password, '/auth/login');
         //save received token and do redirect
         if(response.data.status === 'success'){
             localStorage['auth_token'] = response.data.auth_token;
-            window.location.href = "http://127.0.0.1:5000/cars/dashboard";
+            window.location.href = get_full_url("/cars/dashboard");
         }
     }else{
         let email_label_error = $(".auth-label-error-email")

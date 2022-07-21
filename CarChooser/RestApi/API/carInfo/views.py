@@ -5,9 +5,16 @@ from CarChooser.RestApi.models import User
 from CarChooser.RestApi.CarQuery import CarApiQuery
 from CarChooser.Configs.logger import Logger
 
+from CarChooser.Scrapper.AutoRia import ria_parser
+from CarChooser.Configs.config_reader import get_config
+from CarChooser.Scrapper.serializer import Serializer
+import asyncio
+from CarChooser.Scrapper.query import Query
+import threading
+
 log = Logger().custom_logger()
 query = CarApiQuery(log)
-
+serializer = Serializer(log)
 cars_blueprint = Blueprint('cars', __name__)
 
 
@@ -45,6 +52,29 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
 
     return decorated
+
+
+def run_scrapper():
+    scrapper_query = Query(log)
+    config = get_config('AutoRia')
+    asyncio.set_event_loop(asyncio.new_event_loop())
+    loop = asyncio.get_event_loop()
+    parser = ria_parser.AutoRiaParser(log, config, scrapper_query, serializer)
+    loop.run_until_complete(
+        parser.run_car_info_parser()
+    )
+    return True
+
+
+@token_required
+@cars_blueprint.route('/cars/startParse', methods=['POST'])
+def start_parse(*args):
+    th = threading.Thread(
+        target=run_scrapper,
+        daemon=True
+    )
+    th.start()
+    return jsonify({'data': True})
 
 
 @cars_blueprint.route('/', methods=['GET'])

@@ -6,9 +6,10 @@ from ..exceptions import AutoRiaException
 
 class AutoRiaBrandModelParser(Parser):
 
-    def __init__(self, logger, config, query, serializer) -> None:
+    def __init__(self, logger, config, query, serializer, max_scrapped=50) -> None:
         self.api = RiaApi(logger, config)
         self.log = logger
+        self.max_scrapped = max_scrapped
         super().__init__(logger, query, serializer)
 
     def save_parsed_models(self, models: list, brand_id: int) -> None:
@@ -40,10 +41,11 @@ class AutoRiaBrandModelParser(Parser):
 
 class AutoRiaParser(Parser):
 
-    def __init__(self, logger, config, query, serializer) -> None:
+    def __init__(self, logger, config, query, serializer, max_scrapped=50) -> None:
         self.api = RiaApi(logger, config)
         self.log = logger
         self.current_page = None
+        self.max_scrapped = max_scrapped
         super().__init__(logger, query, serializer)
 
     def bad_request_handler(self, response, for_upd=False):
@@ -74,18 +76,22 @@ class AutoRiaParser(Parser):
             if isinstance(ad_ids, list) and len(ad_ids) > 0:
                 # ad_ids = ['123123', '554322', ....'5345345']
                 for item in ad_ids:
-                    try:
-                        car_data = await self.api.get_ad_info_by_id(item)
-                    except AutoRiaException:
-                        continue
-                    except Exception as error:
-                        self.log.error(
-                            f"Some error with getting car data for ad with id: {item}\n{error}"
-                        )
+                    if self.max_scrapped > 0:
+                        try:
+                            car_data = await self.api.get_ad_info_by_id(item)
+                        except AutoRiaException:
+                            continue
+                        except Exception as error:
+                            self.log.error(
+                                f"Some error with getting car data for ad with id: {item}\n{error}"
+                            )
+                        else:
+                            self.process_ad_id(car_data)
+                            self.max_scrapped -= 1
+                            self.log.debug(f"Cars left to collect: {self.max_scrapped} ")
                     else:
-                        self.process_ad_id(car_data)
-
-
+                        self.log.info(f"Scrapper finished. Collected cars count: {self.max_scrapped}")
+                        return
                 # await atuple(
                 #     amap(
                 #         self.process_ad_id,
@@ -104,6 +110,7 @@ class AutoRiaParser(Parser):
     async def run_car_info_parser(self):
         self.api.set_config()
         await self.get_car_data()
+
 
 
 def run(logger, config, query, serializer):

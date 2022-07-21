@@ -1,4 +1,3 @@
-print('asd1')
 import sys
 
 from CarChooser.Scrapper.AutoRia import ria_parser
