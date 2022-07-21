@@ -1,8 +1,4 @@
 from CarChooser.Configs.ApiConfig import get_config
-# from Configs.ApiConfig import get_config
-# from ..Configs.ApiConfig import get_config
-
-    
 from flask import Flask
 from .extensions import (
     bcrypt,
@@ -16,7 +12,6 @@ def create_app(config_name):
     """
     config_object = get_config(config_name)
     app = Flask(__name__, template_folder='templates')
-    # app = flask
     app.config.from_object(config_object)
     register_extensions(app)
     register_blueprints(app)

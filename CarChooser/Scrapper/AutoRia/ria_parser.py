@@ -46,6 +46,7 @@ class AutoRiaParser(Parser):
         self.log = logger
         self.current_page = None
         self.max_scrapped = max_scrapped
+        self.current_scrapped = 0
         super().__init__(logger, query, serializer)
 
     def bad_request_handler(self, response, for_upd=False):
@@ -76,7 +77,7 @@ class AutoRiaParser(Parser):
             if isinstance(ad_ids, list) and len(ad_ids) > 0:
                 # ad_ids = ['123123', '554322', ....'5345345']
                 for item in ad_ids:
-                    if self.max_scrapped > 0:
+                    if self.current_scrapped < self.max_scrapped:
                         try:
                             car_data = await self.api.get_ad_info_by_id(item)
                         except AutoRiaException:
@@ -87,10 +88,10 @@ class AutoRiaParser(Parser):
                             )
                         else:
                             self.process_ad_id(car_data)
-                            self.max_scrapped -= 1
-                            self.log.debug(f"Cars left to collect: {self.max_scrapped} ")
+                            self.current_scrapped += 1
+                            self.log.debug(f"Cars left to collect: {self.max_scrapped - self.current_scrapped} ")
                     else:
-                        self.log.info(f"Scrapper finished. Collected cars count: {self.max_scrapped}")
+                        self.log.info(f"Scrapper finished. Collected cars count: {self.current_scrapped}")
                         return
                 # await atuple(
                 #     amap(

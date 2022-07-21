@@ -2,14 +2,21 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, ForeignKey, Column, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy_utils import database_exists, create_database
+
 from datetime import datetime
-from CarChooser.Configs.config_reader import get_config
+
+from CarChooser.Configs.ScrapperConfig import get_config
+from os import getenv
+
+
 Base = declarative_base()
 
 
 class DatabaseClient:
     def __init__(self):
-        db_url = get_config('CarsDataBase')
+        db_url = get_config(
+            getenv('FLASK_ENV', 'development')
+        ).get_db_url('CarsDataBase')
         self.engine = create_engine(db_url)
         try:
             if not database_exists(self.engine.url):

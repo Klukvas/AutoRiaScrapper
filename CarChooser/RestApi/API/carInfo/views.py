@@ -1,16 +1,19 @@
 from flask import current_app, jsonify, request, Blueprint, render_template
 from functools import wraps
 import jwt
+
 from CarChooser.RestApi.models import User
 from CarChooser.RestApi.CarQuery import CarApiQuery
 from CarChooser.Configs.logger import Logger
-
 from CarChooser.Scrapper.AutoRia import ria_parser
-from CarChooser.Configs.config_reader import get_config
 from CarChooser.Scrapper.serializer import Serializer
-import asyncio
 from CarChooser.Scrapper.query import Query
+from CarChooser.Configs.ScrapperConfig import get_config
+
+import asyncio
 import threading
+from os import getenv
+
 
 log = Logger().custom_logger()
 query = CarApiQuery(log)
@@ -56,7 +59,9 @@ def token_required(f):
 
 def run_scrapper():
     scrapper_query = Query(log)
-    config = get_config('AutoRia')
+    config = get_config(
+        getenv('FLASK_ENV', 'development')
+    ).AUTO_RIA_API_KEYS
     asyncio.set_event_loop(asyncio.new_event_loop())
     loop = asyncio.get_event_loop()
     parser = ria_parser.AutoRiaParser(log, config, scrapper_query, serializer)

@@ -1,10 +1,11 @@
 import sys
+from os import getenv
 
 from CarChooser.Scrapper.AutoRia import ria_parser
 from CarChooser.Scrapper.query import Query
 from CarChooser.Scrapper.serializer import Serializer
 from CarChooser.Configs.logger import Logger
-from CarChooser.Configs.config_reader import get_config
+from CarChooser.Configs.ScrapperConfig import get_config
 
 from CarChooser.RestApi import api_runner
 
@@ -16,8 +17,10 @@ def start():
         query = Query(log)
         serializer = Serializer(log)
         for argument in argument_list:
-            if argument == '-AutoRia':
-                config = get_config('AutoRia')
+            if argument == 'autoria':
+                config = get_config(
+                    getenv('FLASK_ENV', 'development')
+                ).AUTO_RIA_API_KEYS
                 ria_parser.run(log, config, query, serializer)
             elif argument == 'runserver':
                 api_runner.runserver()

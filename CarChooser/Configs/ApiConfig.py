@@ -1,9 +1,11 @@
-from msilib.schema import Error
 import os
-from CarChooser.Configs.config_reader import get_config
+from CarChooser.Configs.ScrapperConfig import get_config
 
 
-db_url = get_config('UsersDataBase')
+scrapper_configs = get_config(
+    os.getenv('FLASK_ENV', 'development')
+)
+db_url = scrapper_configs.get_db_url('UsersDataBase')
 
 
 class BaseConfig:

@@ -7,20 +7,23 @@ class RiaApi:
 
     def __init__(self, log, config) -> None:
         self.main_url = 'https://developers.ria.com/auto/'
-        self.current_config = -1
         self.log = log
         self.config = config
         self.api_key = None
 
     def set_config(self) -> bool:
-        self.current_config += 1
-        try:
-            self.api_key = self.config['AutoRia']['api_keys']\
-                .split(',')[self.current_config + 1].strip()
-            return True
-        except Exception as err:
-            self.log.warning(f"Error with setting new congig with id: {self.current_config}\nError: {err}")
-            return False
+        if self.api_key is None:
+            self.api_key = self.config[0]
+        else:
+            current_key_index = self.config.index(self.api_key)
+            if len(self.config) - 1 == current_key_index:
+                self.log.warning(
+                    f"All keys of AutoRia`s api was used"
+                )
+                return False
+            else:
+                self.api_key = self.config[current_key_index + 1]
+                return True
 
     async def get_brands(self) -> dict or int:
         """
