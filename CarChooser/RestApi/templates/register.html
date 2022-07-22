@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/auth.css') }}">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="module" src="{{ url_for('static',filename='js/auth.js') }}"></script>
+    <title>Title</title>
+</head>
+<body>
+<div class="reg-form">
+    <label for="email" class="register-label">Email</label>
+    <input id="email" type="text" class="register-input">
+    <label for="password" class="register-label">Password</label>
+    <input id="password" type="password" class="register-input">
+</div>
+<div class="actions">
+    <button class="btn-register" id="signUpBtn">Sign up</button>
+    <p class="signIn">
+        Already registered?
+        <a href="http://127.0.0.1:5001/auth/login" class="signInUrl">Sign in</a>
+    </p>
+</div>
+</body>
+</html>

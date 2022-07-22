@@ -1,19 +1,14 @@
 pipeline {
     agent any
     stages {
-       stage('build') {
+       stage('init') {
           steps {
-             echo 'build'
+             bat 'pipenv install'
           }
        }
-       stage(test) {
+       stage('test') {
            steps {
-               echo 'test'
-           }
-       }
-       stage(test1) {
-           steps {
-               echo 'test'
+               bat 'pipenv run pytest -s -vv'
            }
        }
     }
