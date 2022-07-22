@@ -18,6 +18,7 @@ class DatabaseClient:
             getenv('FLASK_ENV', 'development')
         ).get_db_url('CarsDataBase')
         self.engine = create_engine(db_url)
+
         try:
             if not database_exists(self.engine.url):
                 create_database(self.engine.url)

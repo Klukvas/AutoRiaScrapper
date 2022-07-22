@@ -1,0 +1,73 @@
+version: '3.0'
+services:
+  app:
+    build: .
+    container_name: flask-app
+    ports:
+      - "5001:5001"
+    restart: always
+    command: python manage.py runserver
+
+    environment:
+      CARS_DB_USERNAME: postgres
+      CARS_DB_PASSWORD: 56457
+      CARS_DB_HOST: db-cars
+      CARS_DB_PORT: 5432
+      CARS_DB_NAME: carChoicePrompt
+      CARS_DB_driver: postgresql
+
+      USERS_DB_USERNAME: postgres
+      USERS_DB_PASSWORD: 56457
+      USERS_DB_HOST: db-users
+      USERS_DB_PORT: 5431
+      USERS_DB_NAME: SystemAuth
+      USERS_DB_driver: postgresql
+
+    depends_on:
+      - db-cars
+      - db-users
+
+  db-cars:
+    image: postgres:13-alpine
+    container_name: postgres-db-cars
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 56457
+      POSTGRES_USER: postgres
+      POSTGRES_DB: carChoicePrompt
+    ports:
+      - "5430:5432"
+    volumes:
+      - cars-postgres-data:/var/lib/postgresql/data
+
+  db-users:
+    image: postgres:13-alpine
+    container_name: postgres-db-users
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 56457
+      POSTGRES_USER: postgres
+      POSTGRES_DB: SystemAuth
+    ports:
+      - "5431:5432"
+    volumes:
+      - users-postgres-data:/var/lib/postgresql/data
+
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db-cars
+      - db-users
+volumes:
+  users-postgres-data:
+  cars-postgres-data:
+  pgadmin:

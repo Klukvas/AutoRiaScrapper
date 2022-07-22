@@ -1,3 +1,4 @@
+import os
 import sys
 from os import getenv
 
@@ -9,7 +10,7 @@ from CarChooser.Configs.ScrapperConfig import get_config
 
 from CarChooser.RestApi import api_runner
 
-
+print(f"FLASK_ENV: {os.getenv('FLASK_ENV', 'base')}")
 def start():
     argument_list = sys.argv[1:]
     log = Logger().custom_logger()

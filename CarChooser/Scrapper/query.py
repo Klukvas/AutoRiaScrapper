@@ -1,4 +1,4 @@
-from .models import (Brand,
+from CarChooser.Scrapper.models import (Brand,
                      Category,
                      DatabaseClient,
                      Model,
@@ -7,10 +7,10 @@ from .models import (Brand,
                      GearBox,
                      UndefinedData)
 from sqlalchemy import text
-import json
-from .serializer import Serializer
+from CarChooser.Scrapper.serializer import Serializer
 from psycopg2 import errors as postgres_errors
 from sqlalchemy.exc import IntegrityError
+
 
 class Query:
 
@@ -226,10 +226,10 @@ class OneTimeQuery:
                 continue
 
 
-# if __name__ == "__main__":
-#     from Configs.logger import Logger
-#
-#     log = Logger().custom_logger()
-#     q = Query(log)
-#     models = q.get_model_id('test')
-#     print(models)
+if __name__ == "__main__":
+    from CarChooser.Configs.logger import Logger
+
+    log = Logger().custom_logger()
+    q = Query(log)
+    models = q.get_model_id('test')
+    print(models)

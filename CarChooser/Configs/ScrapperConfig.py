@@ -1,3 +1,6 @@
+import os
+
+
 class BaseConfig:
     AUTO_RIA_API_KEYS = [
         '8s85MIseNcyqLNhDgRSTZBBgZ1GDKVC5WUQLr1BD',
@@ -31,28 +34,12 @@ class BaseConfig:
         )
 
 
-class DevelopmentConfig(BaseConfig):
-    CARS_DATABASE = dict(
-        username="postgres",
-        password="56457",
-        host='localhost',
-        db_name="carChoicePrompt",
-        driver="postgresql"
-    )
-    USERS_DATABASE = dict(
-        username="postgres",
-        password="56457",
-        host="localhost",
-        db_name="SystemAuth",
-        driver="postgresql"
-    )
-
-
 class TestingConfig(BaseConfig):
     CARS_DATABASE = dict(
         username="postgres",
         password="56457",
         host='localhost',
+        port='5432',
         db_name="carChoicePrompt",
         driver="postgresql"
     )
@@ -60,25 +47,47 @@ class TestingConfig(BaseConfig):
         username="postgres",
         password="56457",
         host="localhost",
+        port='5431',
         db_name="SystemAuth",
         driver="postgresql"
+    )
+
+
+class DevelopmentConfig(BaseConfig):
+    CARS_DATABASE = dict(
+        username=os.getenv('CARS_DB_USERNAME', 'postgres'),
+        password=os.getenv('CARS_DB_PASSWORD', '56457'),
+        host=os.getenv('CARS_DB_HOST', 'localhost'),
+        port=os.getenv('CARS_DB_PORT', '5432'),
+        db_name=os.getenv('CARS_DB_NAME', 'carChoicePrompt'),
+        driver=os.getenv('CARS_DB_driver', 'postgresql')
+    )
+    USERS_DATABASE = dict(
+        username=os.getenv('USERS_DB_USERNAME', 'postgres'),
+        password=os.getenv('USERS_DB_PASSWORD', '56457'),
+        host=os.getenv('USERS_DB_HOST', 'localhost'),
+        port=os.getenv('USERS_DB_PORT', '5432'),
+        db_name=os.getenv('USERS_DB_NAME', 'SystemAuth'),
+        driver=os.getenv('USERS_DB_driver', 'postgresql')
     )
 
 
 class ProductionConfig(BaseConfig):
     CARS_DATABASE = dict(
-        username="postgres",
-        password="56457",
-        host='localhost',
-        db_name="carChoicePrompt",
-        driver="postgresql"
+        username=os.getenv('CARS_DB_USERNAME', 'postgres'),
+        password=os.getenv('CARS_DB_PASSWORD', '56457'),
+        host=os.getenv('CARS_DB_HOST', 'localhost'),
+        port=os.getenv('CARS_DB_PORT', '5432'),
+        db_name=os.getenv('CARS_DB_NAME', 'carChoicePrompt'),
+        driver=os.getenv('CARS_DB_driver', 'postgresql')
     )
     USERS_DATABASE = dict(
-        username="postgres",
-        password="56457",
-        host="localhost",
-        db_name="SystemAuth",
-        driver="postgresql"
+        username=os.getenv('USERS_DB_USERNAME', 'postgres'),
+        password=os.getenv('USERS_DB_PASSWORD', '56457'),
+        host=os.getenv('USERS_DB_HOST', 'localhost'),
+        port=os.getenv('USERS_DB_PORT', '5432'),
+        db_name=os.getenv('USERS_DB_NAME', 'SystemAuth'),
+        driver=os.getenv('USERS_DB_driver', 'postgresql')
     )
 
 
