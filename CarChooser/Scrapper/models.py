@@ -5,7 +5,21 @@ from sqlalchemy_utils import database_exists, create_database
 
 from datetime import datetime
 
-from CarChooser.Configs.ScrapperConfig import get_config
+from alembic.script import ScriptDirectory
+from alembic.config import Config
+from alembic import command
+
+import sys                                             
+from os.path import abspath, dirname
+sys.path.append(dirname(dirname(abspath(__file__))))
+try:
+    from CarChooser.Configs.ScrapperConfig import get_config
+except ModuleNotFoundError:
+    from Configs.ScrapperConfig import get_config
+
+from Scrapper.utils import files_utils
+
+
 from os import getenv
 
 
@@ -26,6 +40,15 @@ class DatabaseClient:
             print(f"Some error with creating database client: {err}")
 
         Base.metadata.create_all(self.engine)
+        
+        
+        path_to_alembic_ini = files_utils.find_file("alembic.ini")
+        if not path_to_alembic_ini:
+            raise FileNotFoundError(f"Can not find path to alembic.ini")
+        alembic_cfg = Config(path_to_alembic_ini)
+        script = ScriptDirectory.from_config(alembic_cfg)
+        last_revision_id = script.get_heads()
+        command.stamp(alembic_cfg, last_revision_id)
 
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
@@ -104,4 +127,5 @@ class AdLastPage(Base):
 
 
 if __name__ == '__main__':
+    
     db_client = DatabaseClient()
