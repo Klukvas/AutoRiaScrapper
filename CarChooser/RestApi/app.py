@@ -1,5 +1,6 @@
 from CarChooser.Configs.ApiConfig import get_config
 from flask import Flask
+from sqlalchemy_utils import database_exists, create_database
 from .extensions import (
     bcrypt,
     db
@@ -16,6 +17,12 @@ def create_app(config_name):
     register_extensions(app)
     register_blueprints(app)
     app.app_context().push()
+    engine = db.get_engine()
+    try:
+        if not database_exists(engine.url):
+            create_database(engine.url)
+    except Exception as err:
+        print(f"Some error with creating database with url: {engine.url}: {err}")
     db.create_all()
     # register_errorhandlers(app)
     # register_shellcontext(app)
