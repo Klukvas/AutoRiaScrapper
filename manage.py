@@ -9,12 +9,19 @@ from CarChooser.Configs.logger import Logger
 from CarChooser.Configs.ScrapperConfig import get_config
 
 from CarChooser.RestApi import api_runner
+from CarChooser.Scrapper.utils import files_utils
 
+def _prepare_alembic_config():
+    path_to_configs = str(files_utils.find_file('alembic.ini'))
+    path_to_migration_folder = str(files_utils.find_file('migrations', False))
+    files_utils.change_alembic_ini(path_to_configs, path_to_migration_folder)
+    return
 print(f"FLASK_ENV: {os.getenv('FLASK_ENV', 'base')}")
 def start():
     argument_list = sys.argv[1:]
     log = Logger().custom_logger()
     if argument_list:
+        _prepare_alembic_config()
         query = Query(log)
         serializer = Serializer(log)
         for argument in argument_list:
@@ -33,3 +40,4 @@ def start():
 
 if __name__ == '__main__':
     start()
+    # _prepare_alembic_config()

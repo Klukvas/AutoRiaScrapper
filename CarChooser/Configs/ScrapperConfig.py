@@ -25,11 +25,12 @@ class BaseConfig:
             db_creds = cls.USERS_DATABASE
         else:
             raise SystemError(f"Can not get db creds of database name: {db_name}")
-        return '{driver}://{username}:{password}@{host}/{db_name}'.format(
+        return '{driver}://{username}:{password}@{host}:{port}/{db_name}'.format(
             driver=db_creds["driver"],
             username=db_creds["username"],
             password=db_creds["password"],
             host=db_creds["host"],
+            port=db_creds["port"],
             db_name=db_creds["db_name"]
         )
 
@@ -39,7 +40,7 @@ class TestingConfig(BaseConfig):
         username="postgres",
         password="56457",
         host='localhost',
-        port='5432',
+        port='5430',
         db_name="carChoicePrompt",
         driver="postgresql"
     )
@@ -58,7 +59,7 @@ class DevelopmentConfig(BaseConfig):
         username=os.getenv('CARS_DB_USERNAME', 'postgres'),
         password=os.getenv('CARS_DB_PASSWORD', '56457'),
         host=os.getenv('CARS_DB_HOST', 'localhost'),
-        port=os.getenv('CARS_DB_PORT', '5432'),
+        port=os.getenv('CARS_DB_PORT', '5430'),
         db_name=os.getenv('CARS_DB_NAME', 'carChoicePrompt'),
         driver=os.getenv('CARS_DB_driver', 'postgresql')
     )
@@ -66,7 +67,7 @@ class DevelopmentConfig(BaseConfig):
         username=os.getenv('USERS_DB_USERNAME', 'postgres'),
         password=os.getenv('USERS_DB_PASSWORD', '56457'),
         host=os.getenv('USERS_DB_HOST', 'localhost'),
-        port=os.getenv('USERS_DB_PORT', '5432'),
+        port=os.getenv('USERS_DB_PORT', '5431'),
         db_name=os.getenv('USERS_DB_NAME', 'SystemAuth'),
         driver=os.getenv('USERS_DB_driver', 'postgresql')
     )
@@ -77,7 +78,7 @@ class ProductionConfig(BaseConfig):
         username=os.getenv('CARS_DB_USERNAME', 'postgres'),
         password=os.getenv('CARS_DB_PASSWORD', '56457'),
         host=os.getenv('CARS_DB_HOST', 'localhost'),
-        port=os.getenv('CARS_DB_PORT', '5432'),
+        port=os.getenv('CARS_DB_PORT', '5431'),
         db_name=os.getenv('CARS_DB_NAME', 'carChoicePrompt'),
         driver=os.getenv('CARS_DB_driver', 'postgresql')
     )
@@ -85,7 +86,7 @@ class ProductionConfig(BaseConfig):
         username=os.getenv('USERS_DB_USERNAME', 'postgres'),
         password=os.getenv('USERS_DB_PASSWORD', '56457'),
         host=os.getenv('USERS_DB_HOST', 'localhost'),
-        port=os.getenv('USERS_DB_PORT', '5432'),
+        port=os.getenv('USERS_DB_PORT', '5430'),
         db_name=os.getenv('USERS_DB_NAME', 'SystemAuth'),
         driver=os.getenv('USERS_DB_driver', 'postgresql')
     )

@@ -1,7 +1,14 @@
 import json
 import aiohttp
-from ..exceptions import AutoRiaException
-
+# try:
+#     from ..exceptions import AutoRiaException
+# except ImportError:
+import sys
+from os.path import abspath, dirname
+path = dirname(dirname(abspath(__file__)))
+print(path)
+sys.path.append(path)
+from exceptions import AutoRiaException
 
 class RiaApi:
 

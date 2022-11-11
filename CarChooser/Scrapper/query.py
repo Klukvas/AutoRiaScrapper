@@ -19,8 +19,11 @@ class Query:
         self.log = logger
 
     def __del__(self) -> None:
-        self.db_client.session.commit()
-        self.db_client.session.close()
+        try:
+            self.db_client.session.commit()
+            self.db_client.session.close()
+        except AttributeError:
+            pass
 
     def save_brand(self, brand):
         new_brand = Brand(

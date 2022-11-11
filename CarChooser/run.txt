@@ -1,7 +1,23 @@
 Setup
 1) activate environment >> pipenv shell
 2) download packages >> pipenv install
-3) change data in config.ini file
-4) change sqlalchemy.url in alembic.ini file
-*not required 5) find the latest migration in migrations > versions and type in cmd: alembic stamp {Revision ID}
-6)
+2.2) You already should have an PostgreSQL installed
+3) change script_location and change sqlalchemy.url in alembic.ini file
+4) For creating the DB for cars use command like >>>python path/to/models.py
+5)for run the web run commend from root dir: >>>pipenv run python manage.py runserver
+
+================================================================================================
+For run scrapper:
+
+
+
+
+
+
+
+
+
+
+
+0)Error like "mach-o file, but is an incompatible architecture (have (x86_64), need (arm64e)" which repreduces on mac M1 could be solved by:
+>>>pip install {{lib}} --force-reinstall --no-cache-dir

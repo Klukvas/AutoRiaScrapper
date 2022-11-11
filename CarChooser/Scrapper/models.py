@@ -31,6 +31,7 @@ class DatabaseClient:
         db_url = get_config(
             getenv('FLASK_ENV', 'development')
         ).get_db_url('CarsDataBase')
+        print(f"db_url CarsDataBase: {db_url}")
         self.engine = create_engine(db_url)
 
         try:
