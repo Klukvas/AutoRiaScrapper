@@ -40,7 +40,7 @@ class TestingConfig(BaseConfig):
         username="postgres",
         password="56457",
         host='localhost',
-        port='5430',
+        port='5432',
         db_name="carChoicePrompt",
         driver="postgresql"
     )
@@ -48,7 +48,7 @@ class TestingConfig(BaseConfig):
         username="postgres",
         password="56457",
         host="localhost",
-        port='5431',
+        port='5432',
         db_name="SystemAuth",
         driver="postgresql"
     )
@@ -59,7 +59,7 @@ class DevelopmentConfig(BaseConfig):
         username=os.getenv('CARS_DB_USERNAME', 'postgres'),
         password=os.getenv('CARS_DB_PASSWORD', '56457'),
         host=os.getenv('CARS_DB_HOST', 'localhost'),
-        port=os.getenv('CARS_DB_PORT', '5430'),
+        port=os.getenv('CARS_DB_PORT', '5432'),
         db_name=os.getenv('CARS_DB_NAME', 'carChoicePrompt'),
         driver=os.getenv('CARS_DB_driver', 'postgresql')
     )
@@ -67,7 +67,7 @@ class DevelopmentConfig(BaseConfig):
         username=os.getenv('USERS_DB_USERNAME', 'postgres'),
         password=os.getenv('USERS_DB_PASSWORD', '56457'),
         host=os.getenv('USERS_DB_HOST', 'localhost'),
-        port=os.getenv('USERS_DB_PORT', '5431'),
+        port=os.getenv('USERS_DB_PORT', '5432'),
         db_name=os.getenv('USERS_DB_NAME', 'SystemAuth'),
         driver=os.getenv('USERS_DB_driver', 'postgresql')
     )
@@ -78,7 +78,7 @@ class ProductionConfig(BaseConfig):
         username=os.getenv('CARS_DB_USERNAME', 'postgres'),
         password=os.getenv('CARS_DB_PASSWORD', '56457'),
         host=os.getenv('CARS_DB_HOST', 'localhost'),
-        port=os.getenv('CARS_DB_PORT', '5431'),
+        port=os.getenv('CARS_DB_PORT', '5432'),
         db_name=os.getenv('CARS_DB_NAME', 'carChoicePrompt'),
         driver=os.getenv('CARS_DB_driver', 'postgresql')
     )
@@ -86,7 +86,7 @@ class ProductionConfig(BaseConfig):
         username=os.getenv('USERS_DB_USERNAME', 'postgres'),
         password=os.getenv('USERS_DB_PASSWORD', '56457'),
         host=os.getenv('USERS_DB_HOST', 'localhost'),
-        port=os.getenv('USERS_DB_PORT', '5430'),
+        port=os.getenv('USERS_DB_PORT', '5432'),
         db_name=os.getenv('USERS_DB_NAME', 'SystemAuth'),
         driver=os.getenv('USERS_DB_driver', 'postgresql')
     )
