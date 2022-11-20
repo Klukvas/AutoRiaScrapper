@@ -14,17 +14,19 @@ from CarChooser.Scrapper.utils import files_utils
 
 AVAILABLE_START_ARGS = ["autoria", "runserver"]
 
-def _prepare_alembic_config():
+def _prepare_alembic_config() -> None:
     path_to_configs = str(files_utils.find_file('alembic.ini'))
     path_to_migration_folder = str(files_utils.find_file('migrations', False))
     files_utils.change_alembic_ini(path_to_configs, path_to_migration_folder)
     return
 
 
-print(f"FLASK_ENV: {os.getenv('FLASK_ENV', 'base')}")
 def start():
     argument_list = sys.argv[1:]
-    log = Logger().custom_logger()
+    log = Logger().custom_logger('CarParserLog')
+
+    log.info(f"FLASK_ENV: {os.getenv('FLASK_ENV', 'base')}")
+
     if argument_list:
         _prepare_alembic_config()
         query = Query(log)

@@ -3,7 +3,7 @@ from .riaApi import RiaApi
 from ..main_parser import Parser
 from ..exceptions import AutoRiaException
 
-
+import logging
 class AutoRiaBrandModelParser(Parser):
 
     def __init__(self, logger, config, query, serializer, max_scrapped=50) -> None:
@@ -68,12 +68,13 @@ class AutoRiaParser(Parser):
     async def get_car_data(self):
         self.log.info('Start collect cars data')
         try:
-            self.current_page = self.q.get_last_page()[0]
+            self.current_page = int(self.q.get_last_page()[0]) + 1 
         except Exception as err:
             self.log.warning(f"Can not get last parsed page from db -> set default value(1).\nException: {err}")
             self.current_page = 1
         while True:
-            ad_ids = await self.api.get_ads_ids(self.current_page)
+            ad_ids = await self.api.get_ads_ids(self.current_page, self.max_scrapped)
+            self.log.debug(f"current page: {self.current_page}")
             if isinstance(ad_ids, list) and len(ad_ids) > 0:
                 # ad_ids = ['123123', '554322', ....'5345345']
                 for item in ad_ids:
@@ -91,6 +92,7 @@ class AutoRiaParser(Parser):
                             self.current_scrapped += 1
                             self.log.debug(f"Cars left to collect: {self.max_scrapped - self.current_scrapped} ")
                     else:
+                        self.q.upgrade_last_page(self.current_page)
                         self.log.info(f"Scrapper finished. Collected cars count: {self.current_scrapped}")
                         return
                 # await atuple(

@@ -27,21 +27,22 @@ class CustomFormatter(logging.Formatter):
 
 
 class Logger:
-    def custom_logger(self):
-        log = logging.getLogger('CarParserLogger')
-        if not log.handlers:
-            log.setLevel(logging.DEBUG)
-            file = logging.FileHandler(filename='CarParserLogger.log', mode='a')
-            console = logging.StreamHandler()
+    def custom_logger(self, name=__name__):
+        log = logging.getLogger("CarParserLog")
+        log.propagate = False   #https://docs.python.org/3/library/logging.html#logging.Logger.propagate
+        log.handlers.clear()
+        log.setLevel(logging.DEBUG)
+        file = logging.FileHandler(filename='CarParserLogger.log', mode='a')
+        console = logging.StreamHandler()
 
-            file.setLevel(logging.WARNING)
-            console.setLevel(logging.DEBUG)
+        file.setLevel(logging.WARNING)
+        console.setLevel(logging.DEBUG)
 
-            file.setFormatter(logging.Formatter('%(levelname)s: %(asctime)s: %(message)s: %(process)d: %(processName)s', datefmt='%d/%m  %H:%M:%S'))
-            console.setFormatter(CustomFormatter())
+        file.setFormatter(logging.Formatter('%(levelname)s: %(asctime)s: %(message)s: %(process)d: %(processName)s', datefmt='%d/%m  %H:%M:%S'))
+        console.setFormatter(CustomFormatter())
 
-            log.addHandler(file)
-            log.addHandler(console)
+        log.addHandler(file)
+        log.addHandler(console)
 
         return log
 

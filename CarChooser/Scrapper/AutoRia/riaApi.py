@@ -63,14 +63,14 @@ class RiaApi:
                         f"Error of getting model with status code: {resp.status}; url: {resp.url}\nResponse text: {resp.read()}")
                     return resp.status
 
-    async def get_ads_ids(self, page=1) -> list or int:
+    async def get_ads_ids(self, page=1, countpage=50) -> list or int:
         """
         https://developers.ria.com/auto/search?api_key=YOUR_API_KEY&category_id=1&
         https://developers.ria.com/auto/search?api_key=YOUR_API_KEY&category_id=1&countpage=100
         """
         if self.api_key is None:
             self.set_config()
-        url = self.main_url + f'search?api_key={self.api_key}&category_id=1&countpage=100&page={page}'
+        url = self.main_url + f'search?api_key={self.api_key}&category_id=1&countpage={countpage}&page={page}'
         async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(verify_ssl=False)) as session:
             async with session.get(url) as resp:
                 if resp.status == 200:

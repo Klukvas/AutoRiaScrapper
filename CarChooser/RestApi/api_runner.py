@@ -3,7 +3,7 @@ import os
 
 def runserver():
     app = create_app(os.getenv('FLASK_ENV', 'development'))
-    app.run(port=5001, host="0.0.0.0")
+    app.run(port=5001, host="127.0.0.1")
 
 
 if __name__ == '__main__':
