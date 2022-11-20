@@ -2,9 +2,14 @@ from flask import Blueprint, request, make_response, jsonify, render_template
 from flask.views import MethodView
 from CarChooser.RestApi.models import User, BlacklistToken
 from CarChooser.RestApi.extensions import db, bcrypt
+from .validator import AuthValidator
 
 auth_blueprint = Blueprint('auth', __name__)
 
+MOCK_FAIL_VALIDATE_RESPONSE = {
+    'status': 'fail',
+    'message': 'Can not validate data'
+}
 
 class RegisterAPI(MethodView):
     """
@@ -14,7 +19,17 @@ class RegisterAPI(MethodView):
         return render_template('register.html')
     def post(self):
         # get the post data
-        post_data = request.get_json()
+        try:
+            post_data = request.get_json()
+        except:
+            #if data are empty 
+            return make_response(jsonify(MOCK_FAIL_VALIDATE_RESPONSE)), 401
+        #validate json
+        try:
+            AuthValidator.parse_obj(post_data)
+        except:
+            #if data are not pass validation
+            return make_response(jsonify(MOCK_FAIL_VALIDATE_RESPONSE)), 401
         # check if user already exists
         user = User.query.filter_by(email=post_data.get('email')).first()
         if not user:
@@ -56,7 +71,11 @@ class LoginAPI(MethodView):
         return render_template('login.html')
     def post(self):
         # get the post data
-        post_data = request.get_json()
+        try:
+            post_data = request.get_json()
+        except:
+            #if data are empty
+            return make_response(jsonify(MOCK_FAIL_VALIDATE_RESPONSE)), 401
         try:
             # fetch the user data
             user = User.query.filter_by(

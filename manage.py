@@ -11,11 +11,16 @@ from CarChooser.Configs.ScrapperConfig import get_config
 from CarChooser.RestApi import api_runner
 from CarChooser.Scrapper.utils import files_utils
 
+
+AVAILABLE_START_ARGS = ["autoria", "runserver"]
+
 def _prepare_alembic_config():
     path_to_configs = str(files_utils.find_file('alembic.ini'))
     path_to_migration_folder = str(files_utils.find_file('migrations', False))
     files_utils.change_alembic_ini(path_to_configs, path_to_migration_folder)
     return
+
+
 print(f"FLASK_ENV: {os.getenv('FLASK_ENV', 'base')}")
 def start():
     argument_list = sys.argv[1:]
@@ -35,7 +40,7 @@ def start():
             else:
                 log.error(f"Can not find your argument: {argument}")
     else:
-        log.error(f'With run command u must to pass the one of arguments: ["-AutoRia"]')
+        log.error(f'With run command u must to pass the one of arguments: {AVAILABLE_START_ARGS}')
 
 
 if __name__ == '__main__':
