@@ -3,7 +3,7 @@ pipeline {
     stages {
        stage('init') {
           steps {
-             sh 'pipenv shell && python3 -m pip install pipenv && pipenv install'
+             sh 'python3 -m pip install pipenv &&pipenv shell &&  pipenv install'
           }
        }
        stage('test') {
