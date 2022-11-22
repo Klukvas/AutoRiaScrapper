@@ -4,9 +4,7 @@ try:
 except ImportError:
     import sys
     import os
-    sys.path.append(
-        ".."
-    )
+    sys.path.append("..")
     from Configs.logger import Logger
 
 
