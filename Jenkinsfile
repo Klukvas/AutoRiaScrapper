@@ -1,9 +1,9 @@
 pipeline {
-    agent any
+    agent { docker { image 'python:3.10.7-alpine' } }
     stages {
        stage('init') {
           steps {
-             sh 'pipenv install'
+             sh 'python3 -m pip install pipenv && pipenv install'
           }
        }
        stage('test') {
