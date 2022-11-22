@@ -15,8 +15,11 @@ from CarChooser.Scrapper.utils import files_utils
 AVAILABLE_START_ARGS = ["autoria", "runserver"]
 
 def _prepare_alembic_config() -> None:
+    #find path tp alembic.ini file
     path_to_configs = str(files_utils.find_file('alembic.ini'))
+    # find path to migrations folder
     path_to_migration_folder = str(files_utils.find_file('migrations', False))
+    # change paths in alembic.ini file
     files_utils.change_alembic_ini(path_to_configs, path_to_migration_folder)
     return
 
@@ -28,6 +31,7 @@ def start():
     log.info(f"FLASK_ENV: {os.getenv('FLASK_ENV', 'base')}")
 
     if argument_list:
+        # to success functionality alembic need to know where is alembic.ini file located
         _prepare_alembic_config()
         query = Query(log)
         serializer = Serializer(log)

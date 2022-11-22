@@ -3,7 +3,7 @@ from .riaApi import RiaApi
 from ..main_parser import Parser
 from ..exceptions import AutoRiaException
 
-import logging
+
 class AutoRiaBrandModelParser(Parser):
 
     def __init__(self, logger, config, query, serializer, max_scrapped=50) -> None:
@@ -50,8 +50,10 @@ class AutoRiaParser(Parser):
         super().__init__(logger, query, serializer)
 
     def bad_request_handler(self, response, for_upd=False):
+        # 429 appear when was send max requests with api key
         if response == 429:
             set_config_result = self.api.set_config()
+            # chek for success change api key
             if set_config_result:
                 self.log.info(f"Set new api key to api and continue work")
                 return True

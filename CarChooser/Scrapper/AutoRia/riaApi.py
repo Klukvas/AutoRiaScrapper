@@ -19,9 +19,11 @@ class RiaApi:
         self.api_key = None
 
     def set_config(self) -> bool:
+        # set curret api key for use
         if self.api_key is None:
             self.api_key = self.config[0]
         else:
+            #change existing api key
             current_key_index = self.config.index(self.api_key)
             if len(self.config) - 1 == current_key_index:
                 self.log.warning(
