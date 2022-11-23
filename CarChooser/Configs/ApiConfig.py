@@ -1,12 +1,12 @@
 import os
 from CarChooser.Configs.ScrapperConfig import get_config
 
-
-scrapper_configs = get_config(
-    os.getenv('FLASK_ENV', 'development')
-)
-db_url = scrapper_configs.get_db_url('UsersDataBase')
-
+def get_db_url(env_name):
+    scrapper_configs = get_config(
+        env_name
+    )
+    db_url = scrapper_configs.get_db_url('UsersDataBase')
+    return db_url
 
 class BaseConfig:
     """Base configuration."""
@@ -22,23 +22,25 @@ class DevelopmentConfig(BaseConfig):
     TESTING = True
     FLASK_ENV = "development"
     BCRYPT_LOG_ROUNDS = 4
-    SQLALCHEMY_DATABASE_URI = db_url
+    SQLALCHEMY_DATABASE_URI = get_db_url(FLASK_ENV)
 
 
 class TestingConfig(BaseConfig):
     """Testing configuration."""
     DEBUG = True
     TESTING = True
+    FLASK_ENV = "testing"
     BCRYPT_LOG_ROUNDS = 4
-    SQLALCHEMY_DATABASE_URI = db_url + '_test'
+    SQLALCHEMY_DATABASE_URI = get_db_url(FLASK_ENV)
     PRESERVE_CONTEXT_ON_EXCEPTION = False
 
 
 class ProductionConfig(BaseConfig):
     """Production configuration."""
     SECRET_KEY = 'my_precious'
+    FLASK_ENV = "production"
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = db_url
+    SQLALCHEMY_DATABASE_URI = get_db_url(FLASK_ENV)
 
 
 ENV_CONFIG_DICT = dict(

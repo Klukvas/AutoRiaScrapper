@@ -22,7 +22,7 @@ class Query:
         try:
             self.db_client.session.commit()
             self.db_client.session.close()
-        except AttributeError:
+        except:
             pass
 
     def save_brand(self, brand):

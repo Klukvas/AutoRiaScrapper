@@ -11,13 +11,15 @@ def create_app(config_name):
     """
     Create application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
     """
+    print(f"config_name: {config_name}")
     config_object = get_config(config_name)
     app = Flask(__name__, template_folder='templates')
     app.config.from_object(config_object)
     register_extensions(app)
     register_blueprints(app)
     app.app_context().push()
-    engine = db.get_engine()
+    engine = db.engine
+    print(f"CREATE APP: {engine.url}")
     try:
         if not database_exists(engine.url):
             create_database(engine.url)

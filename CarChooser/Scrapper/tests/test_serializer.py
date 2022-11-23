@@ -3,13 +3,12 @@ try:
     from Configs.logger import Logger
 except ImportError:
     import sys
-    import os
     sys.path.append("..")
     from Configs.logger import Logger
 
 
 class TestSerializer:
-    def setup(self):
+    def setup_method(self):
         self.log = Logger().custom_logger()
         self.s = Serializer(self.log)
 

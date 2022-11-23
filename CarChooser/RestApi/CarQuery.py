@@ -15,9 +15,11 @@ class CarApiQuery:
         self.db_client = DatabaseClient()
 
     def __del__(self) -> None:
-        self.db_client.session.commit()
-        self.db_client.session.close()
-
+        try:
+            self.db_client.session.commit()
+            self.db_client.session.close()
+        except:
+            pass
     def get_all_car_data(self):
         cars = []
         cars_object = self.db_client.session.query(Car, Model, Category, GearBox, Brand) \

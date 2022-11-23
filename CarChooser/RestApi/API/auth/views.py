@@ -3,6 +3,7 @@ from flask.views import MethodView
 from CarChooser.RestApi.models import User, BlacklistToken
 from CarChooser.RestApi.extensions import db, bcrypt
 from .validator import AuthValidator
+from pydantic import ValidationError
 
 auth_blueprint = Blueprint('auth', __name__)
 
@@ -27,9 +28,17 @@ class RegisterAPI(MethodView):
         #validate json
         try:
             AuthValidator.parse_obj(post_data)
-        except:
+        except ValidationError as err:
+            main_err = err.args[0][0]
+            if "Incorrect" in str(main_err.exc):
+                err_msg = main_err.exc
+            else:
+                err_msg = f"{main_err.exc}: {main_err._loc}"
+
+            response = MOCK_FAIL_VALIDATE_RESPONSE.copy()
+            response['message'] = str(err_msg)
             #if data are not pass validation
-            return make_response(jsonify(MOCK_FAIL_VALIDATE_RESPONSE)), 401
+            return make_response(jsonify(response)), 401
         # check if user already exists
         user = User.query.filter_by(email=post_data.get('email')).first()
         if not user:
@@ -81,19 +90,26 @@ class LoginAPI(MethodView):
             user = User.query.filter_by(
                 email=post_data.get('email')
             ).first()
-            if user and bcrypt.check_password_hash(
-                    pw_hash=user.password,
-                    password=post_data.get('password')
-            ):
-                auth_token = user.encode_auth_token(user.id)
-                if auth_token:
+            if user:
+                if bcrypt.check_password_hash(
+                        pw_hash=user.password,
+                        password=post_data.get('password')
+                    ):
+                    auth_token = user.encode_auth_token(user.id)
+                    if auth_token:
+                        responseObject = {
+                            'status': 'success',
+                            'message': 'Successfully logged in.',
+                            'auth_token': auth_token
+                        }
+                        return make_response(jsonify(responseObject)), 200
+                else:
                     responseObject = {
-                        'status': 'success',
-                        'message': 'Successfully logged in.',
-                        'auth_token': auth_token
+                        'status': 'fail',
+                        'message': 'Incorrect password'
                     }
-                    return make_response(jsonify(responseObject)), 200
-            else:
+                    return make_response(jsonify(responseObject)), 401
+            else:   
                 responseObject = {
                     'status': 'fail',
                     'message': 'User does not exist.'

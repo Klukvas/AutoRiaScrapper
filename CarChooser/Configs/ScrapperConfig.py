@@ -41,7 +41,7 @@ class TestingConfig(BaseConfig):
         password="56457",
         host='localhost',
         port='5432',
-        db_name="carChoicePrompt",
+        db_name="carChoicePrompt_test",
         driver="postgresql"
     )
     USERS_DATABASE = dict(
@@ -49,7 +49,7 @@ class TestingConfig(BaseConfig):
         password="56457",
         host="localhost",
         port='5432',
-        db_name="SystemAuth",
+        db_name="SystemAuth_test",
         driver="postgresql"
     )
 

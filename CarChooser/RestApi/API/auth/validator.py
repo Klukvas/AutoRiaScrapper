@@ -22,10 +22,14 @@ class AuthValidator(BaseModel):
 if __name__ == "__main__":
     test_js = {
         "email": "asd@asd.asd",
-        "password": "123wqea sd123"
+        "password": "asd2"
     }
     try:
-        a = UserEgister.parse_obj(test_js)
-        print(a)
+        a = AuthValidator.parse_obj(test_js)
     except ValidationError as err:
-        print(f"Err: {err}")
+        main_err = err.args[0][0]
+        if "Incorrect" in str(main_err.exc):
+            err_msg = main_err.exc
+        else:
+            err_msg = f"{main_err.exc}: {main_err._loc}"
+        print(err_msg)
