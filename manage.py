@@ -1,4 +1,3 @@
-import os
 import sys
 from os import getenv
 
@@ -6,11 +5,11 @@ from CarChooser.Scrapper.AutoRia import ria_parser
 from CarChooser.Scrapper.query import Query
 from CarChooser.Scrapper.serializer import Serializer
 from CarChooser.Configs.logger import Logger
-from CarChooser.Configs.ScrapperConfig import get_config
 
 from CarChooser.RestApi import api_runner
 from CarChooser.Scrapper.utils import files_utils
 
+from CarChooser.Configs.config_utils import get_config, Config_env, Config_type
 
 AVAILABLE_START_ARGS = ["autoria", "runserver"]
 
@@ -28,27 +27,28 @@ def start():
     argument_list = sys.argv[1:]
     log = Logger().custom_logger('CarParserLog')
 
-    log.info(f"FLASK_ENV: {os.getenv('FLASK_ENV', 'base')}")
-
     if argument_list:
         # to success functionality alembic need to know where is alembic.ini file located
         _prepare_alembic_config()
+
         query = Query(log)
         serializer = Serializer(log)
         for argument in argument_list:
             if argument == 'autoria':
-                config = get_config(
-                    getenv('FLASK_ENV', 'development')
+                scrapper_api_keys = get_config(
+                    Config_type.SCRAPPER.value,
+                    Config_env[getenv('FLASK_ENV', 'development')].value
                 ).AUTO_RIA_API_KEYS
-                ria_parser.run(log, config, query, serializer)
+                
+                ria_parser.run(log, scrapper_api_keys, query, serializer)
             elif argument == 'runserver':
                 api_runner.runserver()
             else:
-                log.error(f"Can not find your argument: {argument}")
+                log.error(f"Can not find your argument: {argument}\nAvailable args: {AVAILABLE_START_ARGS}")
     else:
         log.error(f'With run command u must to pass the one of arguments: {AVAILABLE_START_ARGS}')
 
 
 if __name__ == '__main__':
     start()
-    # _prepare_alembic_config()
+    

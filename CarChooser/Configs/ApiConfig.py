@@ -1,19 +1,18 @@
-import os
-from CarChooser.Configs.ScrapperConfig import get_config
+from os import getenv
+from CarChooser.Configs.DataBaseConfig import (
+    ProductionConfig as PROD_DB,
+    DevelopmentConfig as DEV_DB,
+    TestingConfig as TEST_DB
+)
 
-def get_db_url(env_name):
-    scrapper_configs = get_config(
-        env_name
-    )
-    db_url = scrapper_configs.get_db_url('UsersDataBase')
-    return db_url
 
 class BaseConfig:
     """Base configuration."""
-    SECRET_KEY = os.getenv('SECRET_KEY', 'my_precious')
+    SECRET_KEY = getenv('SECRET_KEY', 'my_precious')
     DEBUG = False
     BCRYPT_LOG_ROUNDS = 13
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    USERS_DATABASE = None
 
 
 class DevelopmentConfig(BaseConfig):
@@ -22,7 +21,7 @@ class DevelopmentConfig(BaseConfig):
     TESTING = True
     FLASK_ENV = "development"
     BCRYPT_LOG_ROUNDS = 4
-    SQLALCHEMY_DATABASE_URI = get_db_url(FLASK_ENV)
+    SQLALCHEMY_DATABASE_URI = DEV_DB.get_db_url('USERS_DB')
 
 
 class TestingConfig(BaseConfig):
@@ -31,25 +30,13 @@ class TestingConfig(BaseConfig):
     TESTING = True
     FLASK_ENV = "testing"
     BCRYPT_LOG_ROUNDS = 4
-    SQLALCHEMY_DATABASE_URI = get_db_url(FLASK_ENV)
+    SQLALCHEMY_DATABASE_URI = TEST_DB.get_db_url('USERS_DB')
     PRESERVE_CONTEXT_ON_EXCEPTION = False
 
 
 class ProductionConfig(BaseConfig):
     """Production configuration."""
-    SECRET_KEY = 'my_precious'
+    SECRET_KEY = getenv('SECRET_KEY', 'IFDHDISFhjdsifsahf2387ry9eiowkpd')
     FLASK_ENV = "production"
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = get_db_url(FLASK_ENV)
-
-
-ENV_CONFIG_DICT = dict(
-    development=DevelopmentConfig, testing=TestingConfig, production=ProductionConfig
-)
-
-
-def get_config(config_name):
-    """Retrieve environment configuration settings."""
-    if config_name not in ENV_CONFIG_DICT.keys():
-        raise Exception(f"Incorrect config name. Available names: {ENV_CONFIG_DICT.keys()}")
-    return ENV_CONFIG_DICT.get(config_name, DevelopmentConfig)
+    SQLALCHEMY_DATABASE_URI = PROD_DB.get_db_url('USERS_DB')

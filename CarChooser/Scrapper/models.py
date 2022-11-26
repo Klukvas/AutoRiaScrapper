@@ -9,18 +9,11 @@ from alembic.script import ScriptDirectory
 from alembic.config import Config
 from alembic import command
 
-import sys                                             
-from os.path import abspath, dirname
-sys.path.append(dirname(dirname(abspath(__file__))))
-try:
-    from CarChooser.Configs.ScrapperConfig import get_config
-except ModuleNotFoundError:
-    from Configs.ScrapperConfig import get_config
-
-from Scrapper.utils import files_utils
-
+from CarChooser.Scrapper.utils import files_utils
 
 from os import getenv
+
+from CarChooser.Configs.config_utils import get_config, Config_env, Config_type
 
 
 Base = declarative_base()
@@ -28,9 +21,12 @@ Base = declarative_base()
 
 class DatabaseClient:
     def __init__(self):
+
         db_url = get_config(
-            getenv('FLASK_ENV', 'development')
-        ).get_db_url('CarsDataBase')
+            Config_type.SCRAPPER.value,
+            Config_env[getenv('FLASK_ENV', 'Development')].value
+        ).DB_URL
+        
         self.engine = create_engine(db_url)
 
         try:

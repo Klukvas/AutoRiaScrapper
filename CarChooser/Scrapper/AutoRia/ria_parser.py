@@ -2,7 +2,7 @@ import asyncio
 from .riaApi import RiaApi
 from ..main_parser import Parser
 from ..exceptions import AutoRiaException
-
+from aiohttp.client_exceptions import ClientConnectorError
 
 class AutoRiaBrandModelParser(Parser):
 
@@ -113,8 +113,11 @@ class AutoRiaParser(Parser):
             self.current_page += 1
 
     async def run_car_info_parser(self):
-        self.api.set_config()
-        await self.get_car_data()
+        try:
+            self.api.set_config()
+            await self.get_car_data()
+        except ClientConnectorError as err:
+            self.log.error(f"Connection error while trying to connect to autoRia\nError: {err}")
 
 
 

@@ -8,7 +8,7 @@ from CarChooser.Configs.logger import Logger
 from CarChooser.Scrapper.AutoRia import ria_parser
 from CarChooser.Scrapper.serializer import Serializer
 from CarChooser.Scrapper.query import Query
-from CarChooser.Configs.ScrapperConfig import get_config
+from CarChooser.Configs.config_utils import get_config, Config_env, Config_type
 
 import asyncio
 import threading
@@ -59,12 +59,13 @@ def token_required(f):
 
 def run_scrapper():
     scrapper_query = Query(log)
-    config = get_config(
-        getenv('FLASK_ENV', 'development')
+    scrapper_api_keys = get_config(
+        Config_type.SCRAPPER.value,
+        Config_env[getenv('FLASK_ENV', 'Development')].value
     ).AUTO_RIA_API_KEYS
     asyncio.set_event_loop(asyncio.new_event_loop())
     loop = asyncio.get_event_loop()
-    parser = ria_parser.AutoRiaParser(log, config, scrapper_query, serializer)
+    parser = ria_parser.AutoRiaParser(log, scrapper_api_keys, scrapper_query, serializer)
     loop.run_until_complete(
         parser.run_car_info_parser()
     )

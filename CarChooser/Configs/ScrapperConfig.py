@@ -1,5 +1,8 @@
-import os
-
+from CarChooser.Configs.DataBaseConfig import (
+    ProductionConfig as PROD_DB,
+    DevelopmentConfig as DEV_DB,
+    TestingConfig as TEST_DB
+)
 
 class BaseConfig:
     AUTO_RIA_API_KEYS = [
@@ -14,99 +17,20 @@ class BaseConfig:
         'AxcSopVYnJznZ2wgwAFl9r2WhqD1q2EMT8ppZKa3',
         'rBr6EgVK8KGhdBndCe2xEef4wV4BGUy7d0i3Ynte'
     ]
-    CARS_DATABASE = {}
-    USERS_DATABASE = {}
-
-    @classmethod
-    def get_db_url(cls, db_name):
-        if db_name == 'CarsDataBase':
-            db_creds = cls.CARS_DATABASE
-        elif db_name == 'UsersDataBase':
-            db_creds = cls.USERS_DATABASE
-        else:
-            raise SystemError(f"Can not get db creds of database name: {db_name}")
-        return '{driver}://{username}:{password}@{host}:{port}/{db_name}'.format(
-            driver=db_creds["driver"],
-            username=db_creds["username"],
-            password=db_creds["password"],
-            host=db_creds["host"],
-            port=db_creds["port"],
-            db_name=db_creds["db_name"]
-        )
+    DB_URL = None
+    MAX_PULL = None
 
 
 class TestingConfig(BaseConfig):
-    CARS_DATABASE = dict(
-        username="postgres",
-        password="56457",
-        host='localhost',
-        port='5432',
-        db_name="carChoicePrompt_test",
-        driver="postgresql"
-    )
-    USERS_DATABASE = dict(
-        username="postgres",
-        password="56457",
-        host="localhost",
-        port='5432',
-        db_name="SystemAuth_test",
-        driver="postgresql"
-    )
+    DB_URL = TEST_DB.get_db_url('CARS_DB')
+    MAX_PULL = 10    
 
 
 class DevelopmentConfig(BaseConfig):
-    CARS_DATABASE = dict(
-        username=os.getenv('CARS_DB_USERNAME', 'postgres'),
-        password=os.getenv('CARS_DB_PASSWORD', '56457'),
-        host=os.getenv('CARS_DB_HOST', 'localhost'),
-        port=os.getenv('CARS_DB_PORT', '5432'),
-        db_name=os.getenv('CARS_DB_NAME', 'carChoicePrompt'),
-        driver=os.getenv('CARS_DB_driver', 'postgresql')
-    )
-    USERS_DATABASE = dict(
-        username=os.getenv('USERS_DB_USERNAME', 'postgres'),
-        password=os.getenv('USERS_DB_PASSWORD', '56457'),
-        host=os.getenv('USERS_DB_HOST', 'localhost'),
-        port=os.getenv('USERS_DB_PORT', '5432'),
-        db_name=os.getenv('USERS_DB_NAME', 'SystemAuth'),
-        driver=os.getenv('USERS_DB_driver', 'postgresql')
-    )
+    DB_URL = DEV_DB.get_db_url('CARS_DB')
+    MAX_PULL = 50
 
 
 class ProductionConfig(BaseConfig):
-    CARS_DATABASE = dict(
-        username=os.getenv('CARS_DB_USERNAME', 'postgres'),
-        password=os.getenv('CARS_DB_PASSWORD', '56457'),
-        host=os.getenv('CARS_DB_HOST', 'localhost'),
-        port=os.getenv('CARS_DB_PORT', '5432'),
-        db_name=os.getenv('CARS_DB_NAME', 'carChoicePrompt'),
-        driver=os.getenv('CARS_DB_driver', 'postgresql')
-    )
-    USERS_DATABASE = dict(
-        username=os.getenv('USERS_DB_USERNAME', 'postgres'),
-        password=os.getenv('USERS_DB_PASSWORD', '56457'),
-        host=os.getenv('USERS_DB_HOST', 'localhost'),
-        port=os.getenv('USERS_DB_PORT', '5432'),
-        db_name=os.getenv('USERS_DB_NAME', 'SystemAuth'),
-        driver=os.getenv('USERS_DB_driver', 'postgresql')
-    )
-
-
-ENV_CONFIG_DICT = dict(
-    development=DevelopmentConfig,
-    testing=TestingConfig,
-    production=ProductionConfig
-)
-
-
-def get_config(config_name):
-    """Retrieve environment configuration settings."""
-    if config_name not in ENV_CONFIG_DICT.keys():
-        raise Exception(f"Incorrect config name. Available names: {ENV_CONFIG_DICT.keys()}")
-    return ENV_CONFIG_DICT.get(config_name, DevelopmentConfig)
-
-
-if __name__ == "__main__":
-    scrapper_configs = get_config('development')
-    db_url = scrapper_configs.get_db_url('UsersDataBase')
-    print(db_url)
+    DB_URL = PROD_DB.get_db_url('CARS_DB')
+    MAX_PULL = 100

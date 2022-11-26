@@ -1,25 +1,28 @@
-from CarChooser.Configs.ApiConfig import get_config
 from flask import Flask
 from sqlalchemy_utils import database_exists, create_database
+from CarChooser.Configs.config_utils import get_config, Config_env, Config_type
 from .extensions import (
     bcrypt,
     db
 )
 
 
-def create_app(config_name):
+def create_app(config_env):
     """
     Create application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
     """
-    print(f"config_name: {config_name}")
-    config_object = get_config(config_name)
+    config_object = get_config(
+            Config_type.API.value, 
+            Config_env[config_env].value
+        )
+
     app = Flask(__name__, template_folder='templates')
     app.config.from_object(config_object)
+    # print(f"ANDRIIPX: {db.engine.url}")
     register_extensions(app)
     register_blueprints(app)
     app.app_context().push()
     engine = db.engine
-    print(f"CREATE APP: {engine.url}")
     try:
         if not database_exists(engine.url):
             create_database(engine.url)
