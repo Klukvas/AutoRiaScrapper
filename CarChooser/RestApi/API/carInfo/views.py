@@ -99,31 +99,31 @@ def get_all_car_data(*args):
     return jsonify({'data': query.get_all_car_data()})
 
 
-@cars_blueprint.route('/gearboxes/getAll', methods=['GET'])
+@cars_blueprint.route('/cars/gearboxes/getAll', methods=['GET'])
 @token_required
 def get_all_gearboxes(*args):
     return jsonify({'data': query.get_all_gearboxes()})
 
 
-@cars_blueprint.route('/categories/getAll', methods=['GET'])
+@cars_blueprint.route('/cars/categories/getAll', methods=['GET'])
 @token_required
 def get_all_categories(*args):
     return jsonify({'data': query.get_all_categories()})
 
 
-@cars_blueprint.route('/models/getAll', methods=['GET'])
+@cars_blueprint.route('/cars/models/getAll', methods=['GET'])
 @token_required
 def get_all_models(*args):
     return jsonify({'data': query.get_all_models()})
 
 
-@cars_blueprint.route('/brands/getAll', methods=['GET'])
+@cars_blueprint.route('/cars/brands/getAll', methods=['GET'])
 @token_required
 def get_all_brands(*args):
     return jsonify({'data': query.get_all_brands()})
 
 
-@cars_blueprint.route('/brands/getWithModels', methods=['GET'])
+@cars_blueprint.route('/cars/brands/getWithModels', methods=['GET'])
 @token_required
 def get_model_by_brand(*args):
     return jsonify({'data': query.get_model_by_brand()})
