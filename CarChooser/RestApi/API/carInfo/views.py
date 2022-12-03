@@ -33,11 +33,18 @@ def token_required(f):
                    }, 401
         try:
             auth_token = auth_header.split(" ")[1]
-            data = jwt.decode(
-                auth_token,
-                current_app.config.get('SECRET_KEY'),
-                algorithms=["HS256"]
-            )
+            try:
+                data = jwt.decode(
+                    auth_token,
+                    current_app.config.get('SECRET_KEY'),
+                    algorithms=["HS256"]
+                )
+            except Exception as err:
+                return {
+                           "message": "Something went wrong with parse token",
+                           "data": None,
+                           "error": "Unauthorized"
+                       }, 498
             current_user = User.get_by_id(data["sub"])
             if current_user is None:
                 return {

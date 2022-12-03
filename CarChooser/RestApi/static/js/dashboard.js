@@ -1,4 +1,6 @@
 import {check_token_is_alive, get_full_url} from "./useful.js";
+import {categoryChart} from "./charts.js"
+
 $(document).ready(
     async () => {
         await check_token_is_alive();
@@ -6,18 +8,10 @@ $(document).ready(
     }
 )
 
-async function make_request(token, uri){
-    return await axios.get(
-        get_full_url(uri),
-        {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        }
-    )
-}
+
+
 async function graphics_prepare() {
     const token = localStorage['auth_token'];
-    let all_categories = await make_request(token, '/categories/getAll')
-    console.log(all_categories)
+    // let all_categories = await make_request(token, '/categories/getAll')
+    await categoryChart(token);
 }

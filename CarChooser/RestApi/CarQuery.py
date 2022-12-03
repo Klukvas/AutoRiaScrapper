@@ -126,13 +126,17 @@ class CarApiQuery:
             join category c on c.id = cars_info.category_id
             group by c.category_name
         """
-        result = {}
+        result = []
         data = self.db_client.session.query(
             func.count(Car.id), Category.category_name ) \
             .join(Category, Category.id == Car.category_id)\
                 .group_by(Category.category_name).all()
         for cnt, cat_name in data:
-            result[cat_name] = cnt
+            result.append(
+                    dict(
+                            label=cat_name, value=cnt
+                        ) 
+                )
 
         return result
 

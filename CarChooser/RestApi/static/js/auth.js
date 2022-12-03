@@ -5,12 +5,14 @@ $(document).ready(async function(){
     await check_token_is_alive();
 
     $("#signUpBtn").click(async() => {
+            console.log('register')
             await register_process()
         }
       );
 
 
     $("#signInBtn").click(async() => {
+            console.log('login')
             await login_process()
         }
       );
@@ -30,6 +32,7 @@ async function register_process(){
         let response = await auth(email, password, '/auth/register');
         //save received token and do redirect
         if(response.data.status === 'success'){
+            console.log(`auth token aft reg: ${response.data.auth_token}`)
             localStorage['auth_token'] = response.data.auth_token;
             window.location.href = get_full_url("/cars/dashboard");
         }
