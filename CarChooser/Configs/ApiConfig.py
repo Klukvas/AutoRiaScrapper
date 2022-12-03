@@ -18,6 +18,7 @@ class BaseConfig:
 class DevelopmentConfig(BaseConfig):
     """Development configuration."""
     DEBUG = True
+    FLASK_DEBUG=1
     TESTING = True
     FLASK_ENV = "development"
     BCRYPT_LOG_ROUNDS = 4
@@ -27,6 +28,7 @@ class DevelopmentConfig(BaseConfig):
 class TestingConfig(BaseConfig):
     """Testing configuration."""
     DEBUG = True
+    FLASK_DEBUG=1
     TESTING = True
     FLASK_ENV = "testing"
     BCRYPT_LOG_ROUNDS = 4

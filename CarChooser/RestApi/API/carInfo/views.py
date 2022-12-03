@@ -114,6 +114,7 @@ def get_all_categories(*args):
 @cars_blueprint.route('/cars/models/getAll', methods=['GET'])
 @token_required
 def get_all_models(*args):
+    print('asdasdasd123123123')
     return jsonify({'data': query.get_all_models()})
 
 
@@ -127,3 +128,8 @@ def get_all_brands(*args):
 @token_required
 def get_model_by_brand(*args):
     return jsonify({'data': query.get_model_by_brand()})
+
+@cars_blueprint.route('/cars/brands/getcounByCategory', methods=['GET'])
+@token_required
+def get_count_by_category(*args):
+    return jsonify({'data': query.get_count_by_category()})

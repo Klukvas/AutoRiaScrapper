@@ -6,7 +6,7 @@ from CarChooser.Scrapper.models import (
     Category,
     DatabaseClient
 )
-
+from sqlalchemy import func
 
 class CarApiQuery:
 
@@ -97,7 +97,7 @@ class CarApiQuery:
             })
         return brands
 
-    def get_model_by_brand(self):
+    def get_model_by_brand_old(self):
         brand_model = []
         models_n_brands = self.db_client.session.query(Brand, Model) \
             .join(Model, Model.brand_id == Brand.id)
@@ -109,9 +109,33 @@ class CarApiQuery:
                 }
             )
         return brand_model
+    def get_model_by_brand(self):
+        brand_model = {}
+        models_n_brands = self.db_client.session.query(Brand, Model) \
+            .join(Model, Model.brand_id == Brand.id)
+        for brand, model in models_n_brands:
+            if brand.brand_name in brand_model.keys():
+                brand_model[brand.brand_name].append(model.model_name)
+            else:
+                brand_model[brand.brand_name] = [model.model_name,]
+        return brand_model
 
+    def get_count_by_category(self):
+        """
+            select count(cars_info.id) as cnt, c.category_name from cars_info
+            join category c on c.id = cars_info.category_id
+            group by c.category_name
+        """
+        result = {}
+        data = self.db_client.session.query(
+            func.count(Car.id), Category.category_name ) \
+            .join(Category, Category.id == Car.category_id)\
+                .group_by(Category.category_name).all()
+        for cnt, cat_name in data:
+            result[cat_name] = cnt
+
+        return result
 
 if __name__ == "__main__":
     q = CarApiQuery('asd')
-    a = q.get_model_by_brand()
-    print(a)
+    a = q.get_count_by_category()
