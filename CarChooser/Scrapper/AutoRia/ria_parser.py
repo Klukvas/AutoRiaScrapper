@@ -41,7 +41,7 @@ class AutoRiaBrandModelParser(Parser):
 
 class AutoRiaParser(Parser):
 
-    def __init__(self, logger, config, query, serializer, max_scrapped=50) -> None:
+    def __init__(self, logger, config,  max_scrapped, query, serializer) -> None:
         self.api = RiaApi(logger, config)
         self.log = logger
         self.current_page = None
@@ -121,9 +121,9 @@ class AutoRiaParser(Parser):
 
 
 
-def run(logger, config, query, serializer):
+def run(logger, config, max_scrapped, query, serializer):
     loop = asyncio.get_event_loop()
-    parser = AutoRiaParser(logger, config, query, serializer)
+    parser = AutoRiaParser(logger, config, max_scrapped, query, serializer)
     loop.run_until_complete(
         parser.run_car_info_parser()
     )

@@ -35,12 +35,18 @@ def start():
         serializer = Serializer(log)
         for argument in argument_list:
             if argument == 'autoria':
-                scrapper_api_keys = get_config(
+                scrapper_config = get_config(
                     Config_type.SCRAPPER.value,
                     Config_env[getenv('FLASK_ENV', 'development')].value
-                ).AUTO_RIA_API_KEYS
+                )
                 
-                ria_parser.run(log, scrapper_api_keys, query, serializer)
+                ria_parser.run(
+                        log, 
+                        scrapper_config.AUTO_RIA_API_KEYS,
+                        scrapper_config.MAX_PULL,
+                        query, 
+                        serializer
+                    )
             elif argument == 'runserver':
                 api_runner.runserver()
             else:

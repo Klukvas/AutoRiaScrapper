@@ -60,7 +60,6 @@ def register_blueprints(app):
     """Register Flask blueprints."""
     from CarChooser.RestApi.API.auth.views import auth_blueprint
     from CarChooser.RestApi.API.carInfo.views import cars_blueprint
-    from CarChooser.RestApi.API.swagger import swaggerui_blueprint
     # from API.auth.views import auth_blueprint
     # from API.carInfo.views import cars_blueprint
     app.register_blueprint(auth_blueprint)
