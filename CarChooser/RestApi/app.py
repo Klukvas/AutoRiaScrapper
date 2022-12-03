@@ -5,6 +5,8 @@ from .extensions import (
     bcrypt,
     db
 )
+from flasgger import Swagger
+
 
 
 def create_app(config_env):
@@ -18,7 +20,8 @@ def create_app(config_env):
 
     app = Flask(__name__, template_folder='templates')
     app.config.from_object(config_object)
-    # print(f"ANDRIIPX: {db.engine.url}")
+    app.config['SWAGGER'] = {'openapi':'3.0.3'}
+    setup_swagger(app)
     register_extensions(app)
     register_blueprints(app)
     app.app_context().push()
@@ -35,6 +38,11 @@ def create_app(config_env):
     # configure_logger(app)
     return app
 
+def setup_swagger(app):
+    import os
+    from pathlib import Path
+    openapi_path = os.path.join(Path(__file__).parent.parent.parent, "openapi.json")
+    Swagger(app, template_file=str(openapi_path))
 
 def register_extensions(app):
     """Register Flask extensions."""
@@ -52,10 +60,12 @@ def register_blueprints(app):
     """Register Flask blueprints."""
     from CarChooser.RestApi.API.auth.views import auth_blueprint
     from CarChooser.RestApi.API.carInfo.views import cars_blueprint
+    from CarChooser.RestApi.API.swagger import swaggerui_blueprint
     # from API.auth.views import auth_blueprint
     # from API.carInfo.views import cars_blueprint
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(cars_blueprint)
+    # app.register_blueprint(swaggerui_blueprint)
     # app.register_blueprint(user.views.blueprint)
 #
 #

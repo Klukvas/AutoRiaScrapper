@@ -21,6 +21,7 @@ flask-sqlalchemy = "*"
 psycopg2-binary = "*"
 pydantic = "*"
 email-validator = "*"
+flasgger = "*"
 
 [dev-packages]
 
