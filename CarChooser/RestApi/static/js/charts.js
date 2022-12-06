@@ -66,13 +66,11 @@ export async function CountBy_Value_AndPrice(token, data_value){
             }
             };
         
-            console.log(JSON.stringify(chartConfig));
             FusionCharts.ready(function(){
                 var fusioncharts = new FusionCharts(chartConfig);
                 fusioncharts.render();
             });
     }catch (err){
-        console.log(err);
         if(err.response.status === 498){
             await check_token_is_alive();
         }

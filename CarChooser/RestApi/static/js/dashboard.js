@@ -1,4 +1,4 @@
-import {check_token_is_alive, get_full_url} from "./useful.js";
+import {check_token_is_alive} from "./useful.js";
 import {CountBy_Value_AndPrice, countByBrandAndModel} from "./charts.js"
 
 $(document).ready(
@@ -7,8 +7,10 @@ $(document).ready(
         await graphics_prepare();
     }
 )
-
-
+document.getElementById("a_filter_show").addEventListener("click", showFilter);
+async function showFilter(){
+    console.log('asdasdasd123123')
+};
 
 async function graphics_prepare() {
     const token = localStorage['auth_token'];

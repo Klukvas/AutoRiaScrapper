@@ -25,3 +25,39 @@ html, body {
     height: 13%;
     background-color: burlywood;
 }
+
+.filter{
+    position: fixed;
+    right: -1px;
+    top: 13%;
+    height:5em;
+    width: 5em;
+    background-color: red;
+    z-index: 3;
+}
+
+.filter_show{
+    display: block;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    color: #fff;
+}
+
+.fa{
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    color: white;
+    position: relative;
+
+}
+
+li:before {
+    content: "\f0b0"; /* добавляем иконку дом */
+    color: #aaaaaa;
+    z-index: 5;
+    position: relative;
+}
+
