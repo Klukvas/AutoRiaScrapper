@@ -121,7 +121,6 @@ def get_all_categories(*args):
 @cars_blueprint.route('/cars/models/getAll', methods=['GET'])
 @token_required
 def get_all_models(*args):
-    print('asdasdasd123123123')
     return jsonify({'data': query.get_all_models()})
 
 
@@ -134,9 +133,28 @@ def get_all_brands(*args):
 @cars_blueprint.route('/cars/brands/getWithModels', methods=['GET'])
 @token_required
 def get_model_by_brand(*args):
-    return jsonify({'data': query.get_model_by_brand()})
+    brand = request.args.to_dict().get('brand', None)
+    return jsonify({'data': query.get_model_by_brand(brand)})
 
 @cars_blueprint.route('/cars/brands/getcounByCategory', methods=['GET'])
 @token_required
 def get_count_by_category(*args):
     return jsonify({'data': query.get_count_by_category()})
+
+
+@cars_blueprint.route('/cars/getDataByPriceAndCount', methods=['GET'])
+def get_category_by_type_count(*args):
+    data_type = request.args.to_dict().get('dataType', None)
+    if not data_type:
+        return jsonify({'error': f'dataType parameter can not be empty'})
+
+    try:
+        return jsonify({'data': query.get_data_by_price_n_count(data_type)})
+    except NameError as err:
+        return jsonify({'error': f'dataType( {data_type} ) parameter is not allowed'})
+
+
+@cars_blueprint.route('/cars/brands/getBrandCount', methods=['GET'])
+@token_required
+def get_brand_count(*args):
+    return jsonify({'data': query.get_brand_count()})

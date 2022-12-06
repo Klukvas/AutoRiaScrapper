@@ -1,3 +1,27 @@
-p{
-    font-size: 67px;
+html, body { 
+    height: 100%; 
+    width: 100%; 
+    margin: 0; 
+    background-color: brown;
+}
+.header{
+    height:13%;
+    width: 100%;
+    background-color:teal;
+}
+.charts{
+    display: flex;
+    flex-direction: column;
+}
+.count_charts{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+}
+
+.footer{
+    width: 100%;
+    height: 13%;
+    background-color: burlywood;
 }
