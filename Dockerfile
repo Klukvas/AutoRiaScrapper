@@ -8,8 +8,9 @@ RUN pip install pipenv
 RUN pip install aiohttp
 RUN apt-get update && apt-get install -y --no-install-recommends gcc
 # Install python dependencies in /.venv
-COPY . .
+COPY . ./app
 #RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
+RUN pipenv lock
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --system --deploy
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install aiohttp
 #CMD ["pipenv", "run", "python", "manage.py", "runserver"]

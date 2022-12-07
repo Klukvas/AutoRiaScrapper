@@ -30,6 +30,7 @@ async function register_process(){
     const is_email_valid = validateEmail(email);
     if(is_email_valid){
         let response = await auth(email, password, '/auth/register');
+        console.log(`response from reg: ${response}`)
         //save received token and do redirect
         if(response.data.status === 'success'){
             console.log(`auth token aft reg: ${response.data.auth_token}`)

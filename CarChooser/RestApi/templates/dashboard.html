@@ -11,15 +11,23 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="module" src="{{ url_for('static',filename='js/dashboard.js') }}"></script>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Dashboard</title>
 </head>
 <body>
     <div class="header"></div>
+    
     <div class="filter">
-        <a href="#" class="filter_show filter" id="a_filter_show">
-            <i class="fa fa-filter fa-3x"></i>
+        <a href="#" class="filter_show" id="a_filter_show">
+            <i class="fa fa-filter"></i>
         </a>
     </div>
+    
+    <div class="filter-menu-container">
+        <div class="countbecategory-container">
+            <input type="range" name="category-range" id="category-range-input">
+        </div>
+    </div>
+    
     <div class="charts">
         <div class="count_charts">
             <div id="chart-countBy_category" class="main-chart chartBox"></div>
@@ -27,6 +35,7 @@
         </div>
         <div id="chart-countByBrandModel" class="main-chart chartBox"></div>
     </div>
+    
     <div class="footer"></div>
 </body>
 </html>

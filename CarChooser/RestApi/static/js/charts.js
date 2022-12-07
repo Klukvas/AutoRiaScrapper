@@ -17,6 +17,7 @@ export async function CountBy_Value_AndPrice(token, data_value){
             width: '50%',
             height: '400',
             dataFormat: 'json',
+            id:data_value,
             dataSource: {
                 "chart": {
                     "borderColor": "#666666",
@@ -67,10 +68,12 @@ export async function CountBy_Value_AndPrice(token, data_value){
             };
         
             FusionCharts.ready(function(){
-                var fusioncharts = new FusionCharts(chartConfig);
+                let fusioncharts = new FusionCharts(chartConfig);
                 fusioncharts.render();
+                return fusioncharts
             });
     }catch (err){
+        console.log(`err: ${err}`)
         if(err.response.status === 498){
             await check_token_is_alive();
         }
@@ -78,7 +81,7 @@ export async function CountBy_Value_AndPrice(token, data_value){
     
 };
 
-export async function countByBrandAndModel(token){
+export async function countByBrandAndModel(token, _id='countByBrandAndModel'){
     //countByBrandModel
     try{
         const chartData = await make_request(token, "/cars/brands/getBrandCount");
@@ -88,6 +91,7 @@ export async function countByBrandAndModel(token){
             width: '100%',
             height: '500',
             dataFormat: 'json',
+            id:_id,
             dataSource: {
                 "chart": {
                     "caption": "Count of brands on the market",
@@ -101,11 +105,12 @@ export async function countByBrandAndModel(token){
                 "data": chartData.data.data
                 }
             };
-            FusionCharts.ready(function(){
-                var fusioncharts = new FusionCharts(chartConfig);
+        FusionCharts.ready(function(){
+                let fusioncharts = new FusionCharts(chartConfig);
                 fusioncharts.render();
             });
     }catch (err){
+        console.log(`err: ${err}`)
         if(err.response.status === 498){
             await check_token_is_alive();
         }
